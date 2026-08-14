@@ -10,7 +10,7 @@ The application runs directly in any web browser and does not require a server o
 
 - 📁 Organize information into sections
 - 🗂️ Create categories
-- 🔗 Store and manage links
+- 🔗 Store and manage links, passwords, notes
 - 🔎 Search through stored content
 - ⬆️ Export data to JSON
 - ⬇️ Import data from JSON
@@ -47,11 +47,17 @@ To use the global search, select "Catalog".
 
 The application can save the current state as an HTML file.
 
+Existing files cannot be changed from inside the application.
+
 To save the encrypted data, enter the password when saving and a new name.
+
+The encryption password must be entered every time you save. You can also change your password in the same way.
 
 Data can be exported to JSON and imported back into Ligiloji.
 
 **Be careful, the JSON format is not encrypted and is used to transfer between versions of the program or transform into other data formats.**
+
+To create a new database, it is enough to clear all, add new data and save a new file.
 
 ## Privacy
 
