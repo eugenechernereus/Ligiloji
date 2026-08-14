@@ -1,0 +1,2965 @@
+<!DOCTYPE html>
+<html lang="ru"><head>
+<meta charset="UTF-8">
+<meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+<meta name="author" content="Eugene Chernereus">
+<meta name="copyright" content="Copyright © 2026 Eugene Chernereus">
+
+<title>📚 Ligiloji</title>
+
+<style>
+
+/* =========================================================
+   Ligiloji — SOFT SILVER / GRAPHITE THEME
+   ========================================================= */
+
+[data-action="theme"] {
+    min-width:100px;
+    font-weight:bold;
+}
+
+/* ---------- BODY ---------- */
+
+body {
+    font-family: Arial, sans-serif;
+
+    background:#C9CDD1;
+    color:#292D31;
+
+    margin:0;
+    height:100vh;
+
+    display:flex;
+    flex-direction:column;
+
+    padding:7px;
+    box-sizing:border-box;
+}
+
+
+/* ---------- TITLE ---------- */
+
+#title {
+    color:#3E4348;
+}
+
+#title.unsaved {
+    color:#FF0000;
+}
+
+
+/* ---------- MAIN ---------- */
+
+.main {
+    flex:1;
+    display:flex;
+    overflow:hidden;
+}
+
+
+/* ---------- CATALOG ---------- */
+
+#toc {
+    width:200px;
+    overflow-y:auto;
+
+    padding:7px;
+
+    background:#E1E4E7;
+
+    border:1px solid #AEB4BA;
+    border-radius:7px;
+
+    box-shadow:
+        inset -1px 0 0 rgba(255,255,255,.45),
+        0 1px 3px rgba(35,40,45,.10);
+}
+
+
+/* ---------- CONTENT ---------- */
+
+#content {
+    flex:1;
+    overflow-y:auto;
+
+    margin-left:8px;
+    padding:7px;
+
+    background:#BFC4C9;
+
+    border:1px solid #AEB4BA;
+    border-radius:7px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.20);
+}
+
+
+/* ---------- HEADINGS ---------- */
+
+h1 {
+    color:#3E4348;
+
+    font-size:22px;
+
+    margin:0 0 6px;
+    padding:5px 0;
+}
+
+
+/* ---------- CONTROLS ---------- */
+
+.controls {
+    flex:0 0 auto;
+
+    padding:7px;
+
+    background:#D9DDE1;
+
+    border:1px solid #AEB4BA;
+    border-radius:7px;
+
+    box-shadow:
+        0 2px 5px rgba(35,40,45,.11);
+}
+
+
+/* ---------- INPUTS / TEXTAREA / SELECT ---------- */
+
+input,
+textarea,
+select {
+    padding:8px;
+    margin:5px;
+
+    box-sizing:border-box;
+
+    color:#292D31;
+    background:#F5F6F7;
+
+    border:1px solid #AEB4BA;
+    border-radius:6px;
+
+    outline:none;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color:#7C838A;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color:#7D8994;
+
+    box-shadow:
+        0 0 0 2px rgba(100,115,130,.18);
+}
+
+textarea {
+    min-height:60px;
+    resize:vertical;
+}
+
+select {
+    vertical-align:top;
+    margin-top:5px;
+}
+
+
+/* ---------- BUTTONS ---------- */
+
+button {
+    padding:8px 15px;
+
+    cursor:pointer;
+    vertical-align:top;
+
+    margin-top:5px;
+
+    color:#34393E;
+    background:#D0D5D9;
+
+    border:1px solid #A7AEB4;
+    border-radius:6px;
+
+    box-shadow:
+        0 1px 2px rgba(35,40,45,.08);
+
+    transition:
+        background .15s ease,
+        border-color .15s ease,
+        box-shadow .15s ease,
+        transform .05s ease;
+}
+
+button:hover {
+    background:#C5CBD0;
+
+    border-color:#929AA1;
+
+    box-shadow:
+        0 2px 4px rgba(35,40,45,.14);
+}
+
+button:active {
+    transform:translateY(1px);
+
+    background:#B9C0C6;
+
+    box-shadow:
+        inset 0 1px 2px rgba(35,40,45,.12);
+}
+
+
+/* ---------- CATEGORY ---------- */
+
+.category {
+    margin-top:7px;
+}
+
+
+/* ---------- H2 ---------- */
+
+.category h2 {
+    background:#555B61;
+    color:#F7F8F9;
+
+    padding:7px;
+
+    border-radius:8px;
+
+    box-shadow:
+        0 2px 4px rgba(35,40,45,.18);
+}
+
+
+/* ---------- H3 ---------- */
+
+.category h3 {
+    background:#737A81;
+    color:#F3F4F5;
+
+    padding:8px;
+
+    border-radius:8px;
+
+    box-shadow:
+        0 1px 3px rgba(35,40,45,.14);
+}
+
+
+/* ---------- LINK CARD ---------- */
+
+.link {
+    background:#EEF0F2;
+
+    margin:8px 0;
+    padding:7px;
+
+    border-radius:8px;
+
+    border:1px solid #CDD2D6;
+
+    box-shadow:
+        0 2px 5px rgba(35,40,45,.13);
+
+    transition:
+        background .15s ease,
+        border-color .15s ease,
+        box-shadow .15s ease;
+}
+
+.link:hover {
+    background:#F2F4F5;
+
+    border-color:#BEC4C9;
+
+    box-shadow:
+        0 3px 7px rgba(35,40,45,.16);
+}
+
+
+/* ---------- LINKS ---------- */
+
+.link a {
+    text-decoration:none;
+
+    color:#356A9A;
+
+    font-size:18px;
+}
+
+.link a:hover {
+    color:#244F76;
+    text-decoration:underline;
+}
+
+
+/* ---------- LINK HEADER ---------- */
+
+.link-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.actions {
+    display:flex;
+    gap:4px;
+}
+
+
+/* ---------- SECONDARY TEXT ---------- */
+
+.small {
+    color:#656B72;
+    font-size:15px;
+}
+
+.note {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.number {
+    font-weight:bold;
+    color:#70767D;
+    min-width:24px;
+}
+
+
+/* ---------- TABLE OF CONTENTS ---------- */
+
+.toc-item {
+    display:block;
+    width:100%;
+    font-size:16px;
+
+    padding:7px;
+    margin-bottom:4px;
+
+    border:none;
+
+    background:transparent;
+
+    color:#41464B;
+
+    text-align:left;
+    cursor:pointer;
+
+    border-radius:6px;
+
+    box-shadow:none;
+}
+
+.toc-item:hover {
+    background:#D1D6DA;
+
+    color:#292D31;
+
+    box-shadow:none;
+}
+
+.toc-item.active {
+    background:#C1C7CC;
+
+    color:#292D31;
+
+    font-weight:bold;
+
+    box-shadow:
+        inset 3px 0 0 #68737D;
+}
+
+
+/* ---------- SECTION TITLE ---------- */
+
+.section-title {
+    margin-top:15px;
+    padding:8px;
+
+    font-weight:bold;
+
+    color:#4D5359;
+
+    border-bottom:1px solid #AEB4BA;
+}
+
+
+/* ---------- ROW ---------- */
+
+.row {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-top:4px;
+}
+
+
+.footer {
+    flex: 0 0 auto;
+
+    padding: 5px 10px;
+
+    color: #656B72;
+    font-size: 12px;
+
+    text-align: right;
+}
+
+/* ---------- SCROLL BUTTONS ---------- */
+
+.scroll-buttons {
+    position:fixed;
+    right:12px;
+    bottom:40px;
+
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+
+    z-index:1000;
+}
+
+.scroll-buttons button {
+    width:42px;
+    height:42px;
+
+    padding:0;
+    margin:0;
+
+    font-size:20px;
+    font-weight:bold;
+
+    border-radius:50%;
+    opacity:.85;
+}
+
+.scroll-buttons button:hover {
+    opacity:1;
+}
+
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width:700px) {
+    
+    .scroll-buttons {
+        right:10px;
+        bottom:30px;
+    }
+
+    .scroll-buttons button {
+        width:40px;
+        height:40px;
+    }
+
+    body {
+        padding:5px;
+        overflow-x:hidden;
+    }
+
+    h1 {
+        font-size:20px;
+        margin:0 0 6px;
+        padding:5px 0;
+    }
+
+    .controls {
+        padding:5px;
+
+        display:flex;
+        flex-wrap:wrap;
+        align-items:center;
+
+        gap:5px;
+    }
+
+    .controls button {
+        width:auto;
+        margin:3px;
+    }
+
+    .controls input {
+        flex:1;
+        min-width:150px;
+        margin:5px;
+    }
+
+    .main {
+        flex-direction:column;
+        overflow:visible;
+    }
+
+    #toc {
+        width:auto;
+        height:auto;
+        max-height:200px;
+
+        border-right:none;
+        border-bottom:1px solid #AEB4BA;
+
+        margin-bottom:5px;
+    }
+
+    #content {
+        padding:5px;
+
+        overflow-y:visible;
+
+        margin-left:0;
+    }
+
+    .category h2,
+    .category h3 {
+        font-size:18px;
+    }
+
+    .link-header {
+        flex-direction:row;
+        align-items:center;
+    }
+
+    .actions {
+        display:flex;
+        gap:5px;
+        margin-left:auto;
+    }
+
+    .actions button {
+        flex:0 0 auto;
+        width:auto;
+    }
+
+    .link a {
+        font-size:16px;
+        word-break:break-word;
+    }
+
+    .link-title {
+        flex:1;
+        min-width:0;
+    }
+
+    .link-title a {
+        word-break:break-word;
+    }
+}
+
+
+/* =========================================================
+   WARM THEME
+   ========================================================= */
+
+body[data-theme="warm"] [data-action="theme"] {
+    background:#D6CEC4;
+}
+
+body[data-theme="warm"] {
+    background:#D8D4CE;
+    color:#302F2C;
+}
+
+body[data-theme="warm"] #title {
+    color:#403E3A;
+}
+
+body[data-theme="warm"] #title.unsaved {
+    color:#FF0000;
+}
+
+body[data-theme="warm"] #toc {
+    background:#E8E4DE;
+    border-color:#B9B3AA;
+
+    box-shadow:
+        inset -1px 0 0 rgba(255,255,255,.35),
+        0 1px 3px rgba(60,55,48,.08);
+}
+
+body[data-theme="warm"] #content {
+    background:#D2CEC8;
+    border-color:#B9B3AA;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.18);
+}
+
+body[data-theme="warm"] .controls {
+    background:#E8E4DE;
+    border-color:#B9B3AA;
+
+    box-shadow:
+        0 2px 5px rgba(60,55,48,.10);
+}
+
+body[data-theme="warm"] input,
+body[data-theme="warm"] textarea,
+body[data-theme="warm"] select {
+    color:#302F2C;
+    background:#F5F2EC;
+    border-color:#B9B3AA;
+}
+
+body[data-theme="warm"] input::placeholder,
+body[data-theme="warm"] textarea::placeholder {
+    color:#8A857D;
+}
+
+body[data-theme="warm"] input:focus,
+body[data-theme="warm"] textarea:focus,
+body[data-theme="warm"] select:focus {
+    border-color:#A98B72;
+
+    box-shadow:
+        0 0 0 2px rgba(169,139,114,.18);
+}
+
+body[data-theme="warm"] button {
+    color:#403E3A;
+    background:#E3DED6;
+    border-color:#B9B3AA;
+
+    box-shadow:
+        0 1px 2px rgba(60,55,48,.08);
+}
+
+body[data-theme="warm"] button:hover {
+    background:#D9D2C9;
+    border-color:#AFA79D;
+
+    box-shadow:
+        0 2px 4px rgba(60,55,48,.12);
+}
+
+body[data-theme="warm"] button:active {
+    background:#CEC6BC;
+}
+
+body[data-theme="warm"] .category h2 {
+    background:#625D56;
+    color:#FFFDF9;
+
+    box-shadow:
+        0 2px 4px rgba(60,55,48,.15);
+}
+
+body[data-theme="warm"] .category h3 {
+    background:#817A71;
+    color:#F9F6F0;
+
+    box-shadow:
+        0 1px 3px rgba(60,55,48,.12);
+}
+
+body[data-theme="warm"] .link {
+    background:#F0EDE7;
+    border-color:#D0C9C0;
+
+    box-shadow:
+        0 2px 5px rgba(60,55,48,.13);
+}
+
+body[data-theme="warm"] .link:hover {
+    background:#F4F1EB;
+    border-color:#C5BDB3;
+
+    box-shadow:
+        0 3px 7px rgba(60,55,48,.16);
+}
+
+body[data-theme="warm"] .link a {
+    color:#356A9A;
+}
+
+body[data-theme="warm"] .link a:hover {
+    color:#244F76;
+}
+
+body[data-theme="warm"] .small {
+    color:#6D6962;
+}
+
+body[data-theme="warm"] .number {
+    color:#777168;
+}
+
+body[data-theme="warm"] .toc-item {
+    color:#45413C;
+}
+
+body[data-theme="warm"] .toc-item:hover {
+    background:#DCD6CE;
+    color:#302F2C;
+}
+
+body[data-theme="warm"] .toc-item.active {
+    background:#CFC6BA;
+    color:#302F2C;
+
+    box-shadow:
+        inset 3px 0 0 #8B6F55;
+}
+
+body[data-theme="warm"] .section-title {
+    color:#514C46;
+    border-color:#BEB8AF;
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+
+<h1 id="title"></h1>
+
+
+<div class="controls">
+
+    <button data-action="save-html">
+        💾 Save HTML
+    </button>
+    
+    <button data-action="save-json">
+        ⬆️ Export JSON
+    </button>
+
+    <input id="search" placeholder="Search...">
+
+<br>
+
+    <button data-action="add-section">
+        💼 Add section
+    </button>
+    
+    <button data-action="load-json">
+        ⬇️ Import JSON
+    </button>
+
+    <input type="file" id="json-file" accept=".json" style="display:none">
+    
+    <button data-action="clear-all">
+        🧹 Clear all
+    </button>
+    
+    <button data-action="theme" title="Switch theme">
+        Silver
+    </button>
+
+
+</div>
+
+
+
+<div class="main">
+
+    <div id="toc"></div>
+
+    <div id="content"></div>
+
+</div>
+
+
+<div class="scroll-buttons">
+
+    <button
+        data-action="scroll-top"
+        title="Go to top">
+        ▲
+    </button>
+
+    <button
+        data-action="scroll-bottom"
+        title="Go to bottom">
+        ▼
+    </button>
+
+</div>
+
+
+<script id="database" type="application/json">{
+    "sections": [],
+    "categories": [],
+    "links": []
+}
+</script>
+
+
+<footer class="footer">
+    Ligiloji © 2026 Eugene Chernereus
+</footer>
+
+
+<script>
+
+const state = {
+    data: {
+        sections: [],
+        categories: [],
+        links: []
+    },
+
+    ui: {
+        search: "",
+        editId: null,
+        activeCategoryId: null,
+        selectedCategoryId: null,
+        selectedType: null,
+        selectedId: null,
+        form: null,
+        passwordTarget:null
+    }
+};
+
+
+/* =========================================================
+   THEME SWITCHER
+   ========================================================= */
+
+function applyTheme(theme) {
+
+    document.body.dataset.theme = theme;
+
+    const button =
+        document.querySelector(
+            '[data-action="theme"]'
+        );
+
+    if(button){
+        button.textContent =
+            theme === "warm"
+                ? "Gold"
+                : "Silver";
+    }
+}
+
+
+function toggleTheme(){
+
+    const current =
+        document.body.dataset.theme || "silver";
+
+    const next =
+        current === "silver"
+            ? "warm"
+            : "silver";
+
+    applyTheme(next);
+}
+
+
+const fileTheme =
+    document.body.dataset.theme || "silver";
+
+applyTheme(fileTheme);
+
+
+const sortByName = (a, b) => {
+
+    if(a.system === "trash")
+        return 1;
+    if(b.system === "trash")
+        return -1;
+        
+    return a.name.localeCompare(b.name);
+};
+
+
+const sortByTitle = (a, b) => a.title.localeCompare(b.title);
+
+
+document.getElementById("title").textContent = document.title;
+
+
+function updateTitle(){
+
+    const title =
+        document.getElementById("title");
+
+    title.classList.toggle(
+        "unsaved",
+        state.ui.dirty
+    );
+}
+
+
+function markChanged(){
+    state.ui.dirty = true;
+    updateTitle();
+}
+
+function markSaved(){
+    state.ui.dirty = false;
+    updateTitle();
+}
+
+
+// загрузка данных
+async function loadDatabase() {
+
+    let db = JSON.parse(
+        document
+            .getElementById("database")
+            .textContent
+    );
+
+    if(db.encrypted){
+
+        state.ui.passwordTarget = db;
+
+            state.ui.form = {
+                type:"password"
+            };
+
+            return;
+    }
+    
+    if(
+        !Array.isArray(db.sections) ||
+        !Array.isArray(db.categories) ||
+        !Array.isArray(db.links)
+    ){
+        alert("Difektita bazo");
+        return;
+    }
+
+    state.data.sections = db.sections;
+    state.data.categories = db.categories;
+    state.data.links = db.links;
+    
+    if (state.data.categories.length) {
+        state.ui.selectedCategoryId =
+            state.data.categories[0].id;
+    }
+}
+
+
+document
+    .getElementById("json-file")
+    .addEventListener("change", importJSON);
+
+
+function openForm(options) {
+    state.ui.form = options;
+    render();
+}
+
+
+function focusFirstInput(){
+
+    const input =
+        document.querySelector(
+            ".form input, .link input, .title-edit input"
+        );
+
+    if(input){
+        input.focus();
+    }
+}
+
+
+function renderForm(form){
+    
+    if(form.type === "password"){
+
+        return `
+
+        <div class="link form">
+
+            <h3>
+                🔒 Enter the password
+            </h3>
+
+            <input
+                type="password"
+                class="password-input"
+                placeholder="Pass">
+
+            <button
+                data-action="unlock">
+                🔓 Open
+            </button>
+
+        </div>
+
+        `;
+    }
+    
+    if(form.type === "save-password"){
+
+        return `
+
+        <div class="link form">
+
+            <h3>
+                🔐 Enter the password, if you need
+            </h3>
+
+            <input
+                type="text"
+                class="save-password-input"
+                placeholder="Pass">
+                
+            <input
+                class="save-title-input"
+                value="${state.ui.form.title}"
+                placeholder="Title">
+
+            <button
+                data-action="save-password-confirm">
+                💾 Save
+            </button>
+
+            <button
+                data-action="cancel-form">
+                ❌
+            </button>
+
+        </div>
+
+        `;
+    }
+
+    if(form.type === "move-category"){
+
+        const options =
+            state.data.sections
+                .filter(
+                    section =>
+                    section.system !== "trash"
+                )
+                .map(section =>
+                    `
+                    <option
+                        value="${section.id}"
+                        ${section.id === form.value ? "selected" : ""}>
+                        ${section.name}
+                    </option>
+                    `
+                )
+                .join("");
+
+        return `
+        <div class="link form">
+
+            <select class="move-select">
+                ${options}
+            </select>
+
+            <button
+                data-action="save-form">
+                💾
+            </button>
+
+            <button
+                data-action="cancel-form">
+                ❌
+            </button>
+
+        </div>
+        `;
+    }
+
+    return `
+    <div class="link form">
+
+        <input
+            class="form-input"
+            value="${form.value ?? ""}">
+
+        <button
+            data-action="save-form">
+            💾
+        </button>
+
+        <button
+            data-action="cancel-form">
+            ❌
+        </button>
+
+    </div>
+    `;
+}
+
+
+function importJSON(e) {
+
+    const file = e.target.files[0];
+
+    if (!file)
+        return;
+        
+    if (!confirm("Replace ALL date?")) {
+        e.target.value = "";
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function () {
+
+        try {
+
+            const data = JSON.parse(reader.result);
+            
+            if (
+                !Array.isArray(data.sections) ||
+                !Array.isArray(data.categories) ||
+                !Array.isArray(data.links)
+            ) {
+                throw new Error();
+            }
+
+            state.data.sections = data.sections;
+            state.data.categories = data.categories;
+            state.data.links = data.links;
+
+            state.ui.selectedType = null;
+            state.ui.selectedId = null;
+            state.ui.selectedCategoryId = null;
+            state.ui.activeCategoryId = null;
+            state.ui.editId = null;
+
+            render();
+
+        } catch {
+
+            alert("Wrong JSON");
+        }
+        
+        e.target.value = "";
+    };
+
+    reader.readAsText(file);
+}
+
+
+// поиск и фильтрация
+function getFilteredLinks() {
+
+    const query =
+        state.ui.search.toLowerCase().trim();
+
+    return state.data.links.filter(item => {
+
+        const text = [
+            item.title,
+            item.login
+        ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+        return text.includes(query);
+    });
+}
+
+
+// главный вывод
+function render() {
+
+    const container =
+        document.getElementById("content");
+    
+    container.innerHTML = "";
+    
+    if(state.ui.form){
+        container.innerHTML +=
+            renderForm(state.ui.form);
+    }
+
+    const filtered =
+        getFilteredLinks();
+        
+    if(
+        state.ui.selectedType === "section"
+    ){
+
+        const section =
+            state.data.sections.find(
+                item =>
+                item.id === state.ui.selectedId
+            );
+
+        if(section){
+
+            container.appendChild(
+                renderSection(section, filtered)
+            );
+        }
+    }
+
+    else if(
+        state.ui.selectedType === "contents"
+    ){
+
+        const items =
+            filtered
+                .sort(sortByTitle);
+
+        const block =
+            document.createElement("div");
+
+        block.className = "category";
+
+        let html = `
+            <h2>
+                📖 Catalog
+            </h2>
+        `;
+
+        items.forEach((item, index) => {
+
+            html += renderLink(
+                item,
+                index + 1
+            );
+
+        });
+
+        block.innerHTML = html;
+
+        container.appendChild(block);
+    }
+
+    else if(
+        state.ui.selectedType === "category"
+    ){
+
+        const category =
+            state.data.categories.find(
+                item =>
+                item.id === state.ui.selectedId
+            );
+
+        if(category){
+
+            const items =
+                filtered
+                    .filter(
+                        item =>
+                            item.categoryId === category.id
+                    )
+                    .sort(sortByTitle);
+
+            container.appendChild(
+                renderCategory(
+                    category,
+                    items
+                )
+            );
+        }
+    }
+
+    renderContents();
+    
+    requestAnimationFrame(()=>{
+        focusFirstInput();
+    });
+}
+
+
+function renderSection(section, filtered){
+
+    const block =
+        document.createElement("div");
+
+    block.className =
+        "category";
+
+    let html = "";
+
+    html += `
+
+    <h2>
+
+        💼 ${section.name}
+
+        <button
+            data-action="add-category"
+            data-id="${section.id}">
+            ➕📂
+        </button>
+
+        <button
+            data-action="edit-section"
+            data-id="${section.id}">
+            ✏️
+        </button>
+
+        <button
+            data-action="remove-section"
+            data-id="${section.id}">
+            🗑️
+        </button>
+
+    </h2>
+
+    `;
+
+    const categories =
+        state.data.categories
+            .filter(
+                category =>
+                    category.sectionId === section.id
+            )
+            .sort(sortByName);
+
+    categories.forEach(category => {
+
+        html += renderCategoryHeader(category);
+        
+        if (state.ui.activeCategoryId === category.id) {
+            html += renderAddForm(category);
+        }
+
+        const items =
+            filtered
+                .filter(
+                    item => item.categoryId === category.id
+                )
+                .sort(sortByTitle);
+
+        items.forEach((item, index) => {
+            html += renderLink(item, index + 1);
+        });
+
+    });
+
+    block.innerHTML = html;
+
+    return block;
+}
+
+
+// одна категория
+function renderCategory(category, items) {
+
+    const block =
+        document.createElement("div");
+
+    block.className = "category";
+
+    let html = "";
+
+    html +=
+        renderCategoryHeader(category);
+
+    if (state.ui.activeCategoryId === category.id) {
+
+        html +=
+            renderAddForm(category);
+    }
+
+    items.forEach((item, index) => {
+        html += renderLink(item, index + 1);
+    });
+
+    block.innerHTML = html;
+
+    return block;
+}
+
+
+function isTrashLink(item){
+
+    const trash =
+        state.data.categories.find(
+            category => category.system === "trash"
+        );
+
+    return Boolean(
+        trash &&
+        item.categoryId === trash.id
+    );
+}
+
+
+function shortUrl(url, max = 40){
+
+    if(url.length <= max)
+        return url;
+
+    return url.slice(0, max) + "...";
+}
+
+
+// одна ссылка
+function renderLink(item, number) {
+
+    if(state.ui.editId === item.id) {
+
+        return `
+
+        <div class="link edit-form">
+
+            <input
+                class="edit-title"
+                value="${item.title}"
+                placeholder="Name">
+
+            <input
+                class="edit-url"
+                value="${item.url}"
+                placeholder="URL">
+                
+            <br>
+                
+            <input
+                class="edit-login"
+                value="${item.login ?? ""}"
+                placeholder="Login">
+
+            <input
+                class="edit-password"
+                value="${item.password ?? ""}"
+                placeholder="Password">
+            
+            <br>
+            
+            <textarea
+                class="edit-note"
+                placeholder="Note">${item.note ?? ""}</textarea>
+                
+            <select class="edit-category">
+                ${
+                    state.data.categories
+                        .filter(category => category.system !== "trash")
+                        .sort(sortByName)
+                        .map(category => `
+                            <option
+                                value="${category.id}"
+                                ${category.id === item.categoryId ? "selected" : ""}
+                            >
+                                📂 ${category.name}
+                            </option>
+                        `)
+                        .join("")
+                }
+            </select>
+
+            <button
+                data-action="save-edit"
+                data-id="${item.id}">
+                💾
+            </button>
+
+            <button
+                data-action="cancel-edit">
+                ❌
+            </button>
+
+        </div>
+
+        `;
+    }
+    
+    const linkText =
+        item.url
+        ?
+        `<a href="${item.url}" target="_blank">
+            ${item.title}
+            </a>`
+        :
+        `${item.title}`;
+
+    return `
+
+    <div class="link">
+        
+        <div class="link-header">
+            
+            <div class="link-title">
+                
+                <span class="number">${number}.</span>
+                
+                ${linkText}
+                
+            </div>
+
+            <div class="actions">
+
+                <button
+                    data-action="edit"
+                    data-id="${item.id}">
+                    ✏️
+                </button>
+
+                ${
+                    isTrashLink(item)
+                    ?
+                    `
+                    <button
+                        data-action="restore"
+                        data-id="${item.id}">
+                        ♻️
+                    </button>
+                    `
+                    :
+                    `
+                    <button
+                        data-action="remove"
+                        data-id="${item.id}">
+                        🗑️
+                    </button>
+                    `
+                }
+
+            </div>
+
+        </div>
+
+        <div class="small">
+            
+            ${item.url ? "🌐 " + shortUrl(item.url) + "<br>" : ""}
+            
+            <div class="row">
+                ${item.login ? "🆔 " + item.login + "<br>" : ""}
+                
+                ${
+                    item.login
+                    ?
+                    `
+                    <button
+                        class="copy-btn"
+                        data-action="copy-login"
+                        data-id="${item.id}">
+                        🆔-📋
+                    </button>
+                    `
+                    :
+                    ""
+                    }
+            </div>
+
+            <div class="row">
+                ${item.password ? "🔑 ***<br>" : ""}
+                
+                ${
+                    item.password
+                    ?
+                    `
+                    <button
+                        class="copy-btn"
+                        data-action="copy-password"
+                        data-id="${item.id}">
+                        🔑-📋
+                    </button>
+                    `
+                    :
+                    ""
+                    }
+            </div>
+            
+            ${
+                item.note
+                ?
+                `<div class="note">📜 ${item.note}</div>`
+                :
+                ""
+            }
+
+        </div>
+
+    </div>
+
+    `;
+}
+
+
+async function copyText(text, button){
+
+    await navigator.clipboard.writeText(text);
+
+    const old = button.innerHTML;
+
+    button.innerHTML = "✅";
+
+    setTimeout(()=>{
+        button.innerHTML = old;
+    },1000);
+}
+
+function copyLogin(id, button){
+
+    const item =
+        state.data.links.find(
+            item => item.id === id
+        );
+
+    if(item && item.login){
+        copyText(item.login, button);
+    }
+}
+
+
+function copyPassword(id, button){
+
+    const item =
+        state.data.links.find(
+            item => item.id === id
+        );
+
+    if(item && item.password){
+        copyText(item.password, button);
+    }
+}
+
+
+function renderContents(){
+
+    const toc =
+        document.getElementById("toc");
+
+    toc.innerHTML = "";
+    
+    const contentsButton =
+        document.createElement("button");
+
+    contentsButton.className = "toc-item";
+
+    contentsButton.dataset.contents = "true";
+
+    contentsButton.textContent = "📖 Catalog";
+
+    if(state.ui.selectedType === "contents"){
+        contentsButton.classList.add("active");
+    }
+
+    toc.appendChild(contentsButton);
+
+    state.data.sections
+        .sort(sortByName)
+        
+        .forEach(section=>{
+
+            const sectionTitle =
+                document.createElement("button");
+
+            sectionTitle.className =
+                "toc-item";
+
+            sectionTitle.dataset.section =
+                section.id;
+
+            sectionTitle.textContent =
+                "💼 " + section.name;
+                
+            if(
+                state.ui.selectedType === "section" &&
+                state.ui.selectedId === section.id
+            ){
+                sectionTitle.classList.add("active");
+            }
+
+            toc.appendChild(sectionTitle);
+
+            state.data.categories
+                .filter(category =>
+                    category.sectionId === section.id
+                )
+                .sort(sortByName)
+                
+                .forEach(category=>{
+
+                    const button =
+                        document.createElement("button");
+
+                    button.className =
+                        "toc-item";
+
+                    button.dataset.category =
+                        category.id;
+
+                    button.textContent =
+                        " ‣ 📂 " + category.name;
+
+                    if(
+                        state.ui.selectedCategoryId === category.id
+                    ){
+                        button.classList.add("active");
+                    }
+
+                    toc.appendChild(button);
+                });
+        });
+}
+
+// заголовок категории
+function renderCategoryHeader(category) {
+
+    return `
+
+    <h3>
+
+        📂 ${category.name}
+
+        <button
+            data-action="add-link"
+            data-id="${category.id}">
+            ➕📓
+        </button>
+
+        <button
+            data-action="edit-category"
+            data-id="${category.id}">
+            ✏️
+        </button>
+        
+        <button
+            data-action="move-category"
+            data-id="${category.id}">
+            📦
+        </button>
+
+        <button
+            data-action="remove-category"
+            data-id="${category.id}">
+            🗑️
+        </button>
+
+    </h3>
+
+    `;
+}
+
+
+// форма добавления
+function renderAddForm(category) {
+
+    return `
+
+    <div class="link add-form">
+
+        <input
+            class="new-title"
+            placeholder="Name">
+
+        <input
+            class="new-url"
+            placeholder="URL">
+
+        <br>
+
+        <input
+            class="new-login"
+            placeholder="Login">
+
+        <input
+            class="new-password"
+            placeholder="Pass">
+
+        <br>
+        
+        <textarea
+            class="new-note"
+            placeholder="Note"></textarea>
+
+        <button
+            data-action="save-link"
+            data-id="${category.id}">
+            💾 Save
+        </button>
+
+    </div>
+
+    `;
+}
+
+
+function editLink(id) {
+
+    const item =
+        state.data.links.find(
+            item => item.id === id
+        );
+
+    if (!item) {
+        return;
+    }
+
+    state.ui.editId = id;
+    
+    render()
+}
+
+
+function removeLink(id){
+
+    const item =
+        state.data.links.find(
+            item => item.id === id
+        );
+
+    if(!item)
+        return;
+
+    const trashId =
+        getTrashCategory();
+        
+    item.oldCategoryId = item.categoryId;
+    item.categoryId = trashId;
+    
+    markChanged()
+
+    render();
+}
+
+
+function restoreLink(id){
+
+    const item =
+        state.data.links.find(
+            item => item.id === id
+        );
+
+    if(!item)
+        return;
+
+    if(item.oldCategoryId){
+
+        item.categoryId = item.oldCategoryId;
+        delete item.oldCategoryId;
+    }
+    
+    markChanged()
+
+    render();
+}
+
+
+function showAddForm(categoryId) {
+
+    if(state.ui.activeCategoryId === categoryId) {
+        state.ui.activeCategoryId = null;
+    }
+    
+    else {
+        state.ui.activeCategoryId = categoryId;
+    }
+
+    render();
+}
+
+
+function cancelEdit() {
+
+    state.ui.editId = null;
+
+    render();
+}
+
+
+function saveEdit(id, button) {
+
+    const item =
+        state.data.links.find(
+            item => item.id === id
+        );
+
+    const form =
+        button.closest(".edit-form");
+
+    item.title =
+        form.querySelector(".edit-title").value;
+
+    item.url =
+        form.querySelector(".edit-url").value;
+        
+    item.login =
+        form.querySelector(".edit-login").value;
+
+    item.password =
+        form.querySelector(".edit-password").value;
+
+    item.note =
+        form.querySelector(".edit-note").value;
+    
+    item.categoryId =
+        Number(
+            form.querySelector(".edit-category").value
+        );
+    
+    state.ui.editId = null;
+    
+    markChanged()
+
+    render();
+}
+
+
+function addSection() {
+
+    openForm({
+        type:"section",
+        mode:"add",
+        id:null,
+        value:""
+    });
+}
+
+
+function addCategory(sectionId) {
+
+    openForm({
+        type: "category",
+        mode: "add",
+        id:null,
+        sectionId:sectionId,
+        value:""
+    });
+}
+
+
+function moveCategory(id){
+
+    const category =
+        state.data.categories.find(
+            item => item.id === id
+        );
+
+    if(!category)
+        return;
+
+    state.ui.form = {
+        type:"move-category",
+        id:id,
+        value:category.sectionId
+    };
+    
+    markChanged()
+
+    render();
+}
+
+
+function editSection(id){
+
+    const section =
+        state.data.sections.find(
+            item => item.id === id
+        );
+
+    if(!section)
+        return;
+
+    openForm({
+        type:"section",
+        mode:"edit",
+        id:id,
+        sectionId:id,
+        value:section.name
+    });
+}
+
+
+function editCategory(id){
+
+    const category =
+        state.data.categories.find(
+            item => item.id === id
+        );
+
+    if(!category)
+        return;
+
+    openForm({
+        type:"category",
+        mode:"edit",
+        id:id,
+        sectionId:category.sectionId,
+        value:category.name
+    });
+}
+
+
+function removeSection(id){
+
+    if(!confirm("Delete section?"))
+        return;
+
+    const categoryIds =
+        state.data.categories
+            .filter(
+                category =>
+                category.sectionId === id
+            )
+            .map(
+                category =>
+                category.id
+            );
+
+    state.data.categories =
+        state.data.categories.filter(
+            category =>
+            category.sectionId !== id
+        );
+
+    state.data.links =
+        state.data.links.filter(
+            link =>
+            !categoryIds.includes(link.categoryId)
+        );
+
+    state.data.sections =
+        state.data.sections.filter(
+            section =>
+            section.id !== id
+        );
+        
+    // сброс выбранного раздела
+    if(state.ui.selectedId === id &&
+       state.ui.selectedType === "section"){
+
+        state.ui.selectedType = null;
+        state.ui.selectedId = null;
+    }
+    
+    // сброс выбранной категории внутри удалённого раздела
+    if(
+        state.ui.selectedCategoryId &&
+        categoryIds.includes(state.ui.selectedCategoryId)
+    ){
+
+        state.ui.selectedCategoryId = null;
+        state.ui.selectedType = null;
+        state.ui.selectedId = null;
+    }
+    
+    // закрыть форму добавления ссылки
+    if(
+        state.ui.activeCategoryId &&
+        categoryIds.includes(state.ui.activeCategoryId)
+    ){
+
+        state.ui.activeCategoryId = null;
+    }
+    
+    markChanged()
+
+    render();
+}
+
+
+function removeCategory(id) {
+
+    if(!confirm("Delete category?"))
+        return;
+
+    state.data.categories =
+        state.data.categories.filter(
+            item => item.id !== id
+        );
+
+    state.data.links =
+        state.data.links.filter(
+            item => item.categoryId !== id
+        );
+        
+    if(state.ui.selectedCategoryId === id){
+        state.ui.selectedCategoryId = null;
+        state.ui.selectedType = null;
+        state.ui.selectedId = null;
+    }
+    
+    if(state.ui.activeCategoryId === id){
+        state.ui.activeCategoryId = null;
+    }
+    
+    markChanged()
+
+    render();
+}
+
+
+function getTrashCategory(){
+
+    let trashSection =
+        state.data.sections.find(
+            item => item.system === "trash"
+        );
+
+    if(!trashSection){
+
+        trashSection = {
+            id: Date.now(),
+            name:"🗑️ Trash",
+            system:"trash"
+        };
+
+        state.data.sections.push(trashSection);
+    }
+
+    let trashCategory =
+        state.data.categories.find(
+            item => item.system === "trash"
+        );
+
+    if(!trashCategory){
+
+        trashCategory = {
+            id: Date.now(),
+            name:"Deleted links",
+            sectionId:trashSection.id,
+            system:"trash"
+        };
+
+        state.data.categories.push(trashCategory);
+    }
+
+    return trashCategory.id;
+}
+
+
+function saveCategoryLink(categoryId, button) {
+
+    const form =
+    button.closest(".add-form");
+
+    const title =
+        form.querySelector(".new-title").value;
+
+    const url =
+        form.querySelector(".new-url").value;
+
+    const login =
+        form.querySelector(".new-login").value;
+
+    const password =
+        form.querySelector(".new-password").value;
+
+    const note =
+        form.querySelector(".new-note").value;
+
+    state.data.links.push({
+        id: Date.now(),
+        title: title,
+        url: url,
+        login: login,
+        password: password,
+        note: note,
+        categoryId: categoryId
+    });
+
+    state.ui.activeCategoryId = null;
+    
+    markChanged()
+
+    render();
+}
+
+
+// запуск
+(async()=>{
+
+    await loadDatabase();
+
+    render();
+
+})();
+
+
+document
+    .getElementById("search")
+    .addEventListener("input", function(e){
+        state.ui.search = e.target.value;
+
+        render();
+    });
+
+document.addEventListener(
+    "click",
+    handleClick
+);
+
+
+document.addEventListener(
+    "keydown",
+    handleKeydown
+);
+
+
+function handleKeydown(e){
+
+    if(e.key === "Escape"){
+
+        if(state.ui.editId){
+            state.ui.editId = null;
+            render();
+            return;
+        }
+
+        if(state.ui.form){
+            state.ui.form = null;
+            render();
+            return;
+        }
+
+        if(state.ui.editTitle){
+            state.ui.editTitle = false;
+            render();
+            return;
+        }
+    }
+
+    if(e.key === "Enter"){
+
+        // чтобы Enter не срабатывал внутри textarea
+        if(e.target.tagName === "TEXTAREA"){
+            return;
+        }
+
+        const form =
+            e.target.closest(".link, .form, .title-edit");
+
+        if(!form){
+            return;
+        }
+
+        let button =
+            form.querySelector(
+                '[data-action^="save"]'
+            );
+
+        // открытие зашифрованной базы
+        if(!button){
+
+            button =
+                form.querySelector(
+                    '[data-action="unlock"]'
+                );
+        }
+
+        if(button){
+            button.click();
+        }
+    }
+}
+
+
+function saveForm(button){
+
+    const form = button.closest(".link");
+        
+    const data = state.ui.form;
+    
+    if(data.type === "move-category"){
+
+        const select =
+            button.closest(".form")
+                .querySelector(".move-select");
+
+        const category =
+            state.data.categories.find(
+                item => item.id === data.id
+            );
+
+        if(category){
+
+            category.sectionId =
+                Number(select.value);
+        }
+
+        state.ui.form = null;
+
+        render();
+
+        return;
+    }
+
+    const value =
+        form.querySelector(".form-input").value.trim();
+
+    if(!value)
+        return;
+
+    // добавление раздела
+    if(
+        data.type === "section" &&
+        data.mode === "add"
+    ){
+
+        state.data.sections.push({
+            id:Date.now(),
+            name:value
+        });
+    }
+
+    // изменение раздела
+    if(
+        data.type === "section" &&
+        data.mode === "edit"
+    ){
+
+        const section =
+            state.data.sections.find(
+                item=>item.id===data.id
+            );
+
+        section.name=value;
+    }
+
+    // добавление категории
+    if(
+        data.type==="category" &&
+        data.mode==="add"
+    ){
+
+        state.data.categories.push({
+            id:Date.now(),
+            name:value,
+            sectionId:data.sectionId
+        });
+    }
+
+    // изменение категории
+    if(
+        data.type==="category" &&
+        data.mode==="edit"
+    ){
+
+        const category =
+            state.data.categories.find(
+                item=>item.id===data.id
+            );
+
+        category.name=value;
+    }
+
+    state.ui.form=null;
+    
+    markChanged()
+
+    render();
+}
+
+
+function scrollTopPage(){
+
+    const content =
+        document.getElementById("content");
+
+    if(
+        window.matchMedia("(max-width:700px)").matches
+    ){
+
+        window.scrollTo({
+            top:0,
+        });
+
+    } else {
+
+        content.scrollTo({
+            top:0,
+        });
+
+    }
+}
+
+
+function scrollBottomPage(){
+
+    const content =
+        document.getElementById("content");
+
+    if(
+        window.matchMedia("(max-width:700px)").matches
+    ){
+
+        window.scrollTo({
+            top:document.documentElement.scrollHeight,
+        });
+
+    } else {
+
+        content.scrollTo({
+            top:content.scrollHeight,
+        });
+
+    }
+}
+
+
+
+function handleClick(e) {
+
+    const button = e.target.closest("button");
+
+    if(!button)
+        return;
+        
+    if(button.dataset.contents){
+
+        state.ui.selectedType = "contents";
+        state.ui.selectedId = null;
+        state.ui.selectedCategoryId = null;
+
+        render();
+        return;
+    }
+    
+    if (button.dataset.section) {
+        state.ui.selectedType = "section";
+        state.ui.selectedId = Number(button.dataset.section);
+        state.ui.selectedCategoryId = null;
+        render();
+        return;
+    }
+
+    if (button.dataset.category) {
+        state.ui.selectedType = "category";
+        state.ui.selectedId = Number(button.dataset.category);
+        state.ui.selectedCategoryId = Number(button.dataset.category);
+        render();
+        return;
+    }
+    
+    const action = button.dataset.action;
+    
+    if(action === "scroll-top"){
+        scrollTopPage();
+        return;
+    }
+
+    if(action === "scroll-bottom"){
+        scrollBottomPage();
+        return;
+    }
+
+
+    if(action === "theme"){
+        toggleTheme();
+        return;
+    }
+
+    const id = button.dataset.id
+        ? Number(button.dataset.id)
+        : null;
+        
+    if(action === "copy-login"){
+        copyLogin(id, button);
+        return;
+    }
+
+    if(action === "copy-password"){
+        copyPassword(id, button);
+        return;
+    }
+
+    if(action === "edit") {
+        editLink(id);
+        return;
+    }
+
+    if(action === "remove") {
+        removeLink(id);
+        return;
+    }
+
+    if(action === "save-edit") {
+        saveEdit(
+            id,
+            button
+        );
+        return;
+    }
+
+    if(action === "cancel-edit") {
+        cancelEdit();
+        return;
+    }
+    
+    if(action === "add-link") {
+        showAddForm(id);
+        return;
+    }
+    
+    if(action === "add-category") {
+        addCategory(id);
+        return;
+    }
+
+    if(action === "edit-category") {
+        editCategory(id);
+        return;
+    }
+    
+    if(action === "move-category") {
+        moveCategory(id);
+        return;
+    }
+
+    if(action === "remove-category") {
+        removeCategory(id);
+        return;
+    }
+    
+    if(action === "save-html") {
+        saveHTML();
+        return;
+    }
+    
+    if(action === "save-link") {
+        saveCategoryLink(
+            id,
+            button
+        );
+        return;
+    }
+    
+    if(action === "save-form") {
+        saveForm(button);
+        return;
+    }
+    
+    if(action === "save-json") {
+        saveJSON();
+        return;
+    }
+    
+    if(action === "add-section") {
+        addSection();
+        return;
+    }
+    
+    if(action === "edit-section") {
+        editSection(id);
+        return;
+    }
+
+    if(action === "remove-section") {
+        removeSection(id);
+        return;
+    }
+    
+    if (action === "clear-all") {
+        clearAll();
+        return;
+    }
+    
+    if (action === "load-json") {
+        document.getElementById("json-file").click();
+        return;
+    }
+    
+    if(action === "cancel-form"){
+        state.ui.form = null;
+        render();
+        return;
+    }
+    
+    if(action === "restore") {
+        restoreLink(id);
+        return;
+    }
+    
+    if(action === "unlock") {
+        unlockDatabase(button);
+        return;
+    }
+    
+    if(action === "save-password-confirm"){
+        saveHTMLWithPassword(button);
+        return;
+    }
+}
+
+
+async function unlockDatabase(button){
+
+    const input =
+        button
+            .closest(".form")
+            .querySelector(".password-input");
+
+    const password =
+        input.value;
+
+    try {
+
+        const db =
+            await decryptData(
+                state.ui.passwordTarget,
+                password
+            );
+
+        state.data.sections =
+            db.sections;
+
+        state.data.categories =
+            db.categories;
+
+        state.data.links =
+            db.links;
+
+        state.ui.form = null;
+        state.ui.passwordTarget = null;
+
+        render();
+    }
+
+    catch(e){
+        input.value = "";
+        input.focus();
+    }
+}
+
+
+function clearAll() {
+
+    if (!confirm("Are you ready to clear all?"))
+        return;
+
+    state.data.sections = [];
+    state.data.categories = [];
+    state.data.links = [];
+
+    state.ui.selectedType = null;
+    state.ui.selectedId = null;
+    state.ui.selectedCategoryId = null;
+    state.ui.activeCategoryId = null;
+    state.ui.editId = null;
+
+    render();
+}
+
+
+function downloadFile(filename, content, type) {
+    
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+
+// ==========================
+// CRYPTO
+// ==========================
+
+async function deriveKey(password, salt){
+
+    const enc = new TextEncoder();
+
+    const keyMaterial =
+        await crypto.subtle.importKey(
+            "raw",
+            enc.encode(password),
+            "PBKDF2",
+            false,
+            ["deriveKey"]
+        );
+
+
+    return await crypto.subtle.deriveKey(
+        {
+            name:"PBKDF2",
+            salt:salt,
+            iterations:150000,
+            hash:"SHA-256"
+        },
+        keyMaterial,
+        {
+            name:"AES-GCM",
+            length:256
+        },
+        false,
+        [
+            "encrypt",
+            "decrypt"
+        ]
+    );
+}
+
+
+
+async function encryptData(data, password){
+
+    const enc =
+        new TextEncoder();
+
+    const salt =
+        crypto.getRandomValues(
+            new Uint8Array(16)
+        );
+
+    const iv =
+        crypto.getRandomValues(
+            new Uint8Array(12)
+        );
+
+    const key =
+        await deriveKey(
+            password,
+            salt
+        );
+
+    const encrypted =
+        await crypto.subtle.encrypt(
+            {
+                name:"AES-GCM",
+                iv:iv
+            },
+            key,
+            enc.encode(
+                JSON.stringify(data)
+            )
+        );
+
+
+    return {
+
+        encrypted:true,
+
+        salt:
+            btoa(
+                String.fromCharCode(...salt)
+            ),
+
+        iv:
+            btoa(
+                String.fromCharCode(...iv)
+            ),
+
+        data:
+            btoa(
+                String.fromCharCode(
+                    ...new Uint8Array(encrypted)
+                )
+            )
+    };
+}
+
+
+async function decryptData(obj,password){
+
+    const dec =
+        new TextDecoder();
+
+    const salt =
+        Uint8Array.from(
+            atob(obj.salt),
+            c=>c.charCodeAt(0)
+        );
+
+    const iv =
+        Uint8Array.from(
+            atob(obj.iv),
+            c=>c.charCodeAt(0)
+        );
+
+    const encrypted =
+        Uint8Array.from(
+            atob(obj.data),
+            c=>c.charCodeAt(0)
+        );
+
+    const key =
+        await deriveKey(
+            password,
+            salt
+        );
+
+    const result =
+        await crypto.subtle.decrypt(
+            {
+                name:"AES-GCM",
+                iv:iv
+            },
+            key,
+            encrypted
+        );
+
+    return JSON.parse(
+        dec.decode(result)
+    );
+}
+
+
+function getSaveDate(){
+
+    const now = new Date();
+
+    return (
+        `${now.getUTCFullYear()}_` +
+        `${String(now.getUTCMonth() + 1).padStart(2, '0')}` +
+        `${String(now.getUTCDate()).padStart(2, '0')}_` +
+        `${String(now.getUTCHours()).padStart(2, '0')}` +
+        `${String(now.getUTCMinutes()).padStart(2, '0')}`
+    );
+}
+
+
+function saveJSON(){
+    
+    const date = getSaveDate();
+
+    const json =
+        JSON.stringify(
+            state.data,
+            null,
+            4
+        );
+
+    const title =
+        document
+            .getElementById("title")
+            .textContent
+            .trim();
+
+    const safeTitle =
+        title.replace(
+            /[^\p{L}\p{N}]+/gu,
+            "_"
+        );
+
+    const name =
+        `${safeTitle}_${date}.json`;
+
+    downloadFile(
+        name,
+        json,
+        "application/json;charset=utf-8"
+    );
+}
+
+
+async function saveHTML(){
+
+    state.ui.form = {
+        type:"save-password",
+        title: document
+            .getElementById("title")
+            .textContent
+            .trim()
+    };
+    
+    render();
+}
+
+
+async function saveHTMLWithPassword(button){
+
+    const form =
+        button.closest(".form");
+
+    const saveTitle =
+        form
+            .querySelector(".save-title-input")
+            .value
+            .trim();
+    
+    document
+        .getElementById("title")
+        .textContent = saveTitle;
+
+    const password =
+        form
+            .querySelector(".save-password-input")
+            .value;
+    
+    let dataToSave;
+
+    if (password) {
+        dataToSave = await encryptData(
+            state.data,
+            password
+        );
+
+    } else {
+
+        dataToSave = state.data;
+    }
+
+    const oldActive = state.ui.activeCategoryId;
+    const oldEdit = state.ui.editId;
+
+    state.ui.form = null;
+    state.ui.activeCategoryId = null;
+    state.ui.editId = null;
+    
+    markSaved()
+
+    render();
+
+    const json =
+        JSON.stringify(
+            dataToSave,
+            null,
+            4
+        );
+
+    const clone =
+        document.documentElement.cloneNode(true);
+    
+    clone
+        .querySelector("body")
+        .setAttribute(
+            "data-theme",
+            document.body.dataset.theme || "silver"
+        );
+    
+    clone
+        .querySelector("title")
+        .textContent =
+        saveTitle;
+    
+    clone
+        .querySelector("#toc")
+        .innerHTML = "";
+
+    clone
+        .querySelector("#content")
+        .innerHTML = "";
+
+    const database =
+        clone.querySelector("#database");
+
+    if(database){
+        database.textContent = json;
+    }
+
+    let html =
+        "<!DOCTYPE html>\n" +
+        clone.outerHTML;
+
+    const date = getSaveDate();
+
+    const safeTitle =
+        saveTitle.replace(
+            /[^\p{L}\p{N}]+/gu,"_"
+        );
+
+    const name =
+        `${safeTitle}_${date}.html`;
+
+    downloadFile(
+        name,
+        html,
+        "text/html;charset=utf-8"
+    );
+
+    // вернуть интерфейс
+    state.ui.activeCategoryId = oldActive;
+    state.ui.editId = oldEdit;
+    state.ui.form = null;
+
+    render();
+}
+
+
+</script>
+
+
+</body></html>
