@@ -93,30 +93,15 @@ Ligiloji is an actively developed project.
 
 The current implementation is an early-stage release and its architecture, interface and functionality may change as development continues.
 
-## Roadmap
-
-Planned areas of development may include:
-
-- [ ] Improve data protection and encryption
-- [ ] Improve UI/UX
-- [ ] Improve mobile support
-- [ ] Expand import/export capabilities
-- [ ] Improve data management
-- [ ] Refactor the single-file architecture when appropriate
-- [ ] Add more customization options
-- [ ] Establish a stable release process
-- [ ] Publish future versions through Git tags
-
-The roadmap is intentionally subject to change.
-
 ## Versioning
 
-Released versions are identified using Git tags.
+Released versions are identified using Git tags following semantic versioning.
 
 Example:
 
 ```text
 v0.1.1
+v0.1.2
 ```
 
 The repository history is the authoritative source for development changes.
