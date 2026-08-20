@@ -59,6 +59,28 @@ Data can be exported to JSON and imported back into Ligiloji.
 
 To create a new database, it is enough to clear all, add new data and save a new file.
 
+Although the number of notes is not technically limited, it is not recommended to store more than 5,000 entries in a single file.
+
+## Autobackup
+
+When any changes are made, the browser temporarily saves them in ‘lockalstorage’. If the page is accidentally closed, the changes will be saved and can be restored the next time the application is opened (provided that the browser data has not been cleared).
+
+Encrypted data also remains encrypted in the temporary storage.
+
+When the file is saved, the temporary data is automatically cleared.
+
+## Deleting elements
+
+When a section or category is deleted, it is removed along with all its contents, and there is no way to restore it.
+
+When a note is deleted within a category, it is moved to the automatically created “Trash” category.
+
+From the trash, the entry is restored to its original category.
+
+To clear the trash, you need to delete it completely.
+
+***
+
 ## Privacy
 
 Users should nevertheless understand the security properties of their browser and their local files before storing sensitive information.
