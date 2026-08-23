@@ -442,7 +442,7 @@ button:active {
     font-size:20px;
     font-weight:bold;
 
-    border-radius:50%;
+    border-radius:8px;
     opacity:.70;
 }
 
@@ -456,8 +456,9 @@ button:active {
 @media (max-width:700px) {
     
     .scroll-buttons {
-        right:130px;
+        left: 50%;
         bottom:30px;
+        transform: translateX(-50%);
     }
 
     .scroll-buttons button {
