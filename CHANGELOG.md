@@ -5,6 +5,13 @@ All notable changes to Ligiloji are documented in this file.
 The project is currently under active development, so the format
 and release process may evolve over time.
 
+## [v0.1.3] - 2026-08-26
+
+### Added
+
+- Minor interface changes
+- Function of unfolding long notes
+
 ## [v0.1.2] - 2026-08-20
 
 ### Added

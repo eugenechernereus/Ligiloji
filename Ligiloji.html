@@ -166,13 +166,20 @@ select:focus {
 }
 
 textarea {
-    min-height:60px;
+    min-height:80px;
     resize:vertical;
+    width:60%
 }
 
 select {
     vertical-align:top;
     margin-top:5px;
+}
+
+.edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
 }
 
 
@@ -337,6 +344,22 @@ button:active {
     min-width:24px;
 }
 
+.link-note {
+    cursor: pointer;
+}
+
+.link-note:not(.expanded) {
+    max-height: 6em;
+    overflow: hidden;
+    cursor: pointer;
+
+    mask-image: linear-gradient(
+        to bottom,
+        black 70%,
+        transparent 100%
+    );
+}
+
 
 /* ---------- TABLE OF CONTENTS ---------- */
 
@@ -469,6 +492,12 @@ button:active {
     body {
         padding:5px;
         overflow-x:hidden;
+    }
+    
+    textarea {
+        min-height:70px;
+        resize:vertical;
+        width:95%
     }
 
     h1 {
@@ -739,7 +768,7 @@ body[data-theme="warm"] .section-title {
         ⬆️ Export JSON
     </button>
 
-    <input id="search" placeholder="Search...">
+    <input id="search" type="search" placeholder="Search...">
 
 <br>
 
@@ -801,7 +830,7 @@ body[data-theme="warm"] .section-title {
 
 
 <footer class="footer">
-    Ligiloji © 2026 Eugene Chernereus
+    Ligiloji © 2026 Eugene Chernereus  |  v0.1.3
 </footer>
 
 
@@ -1632,6 +1661,38 @@ function renderLink(item, number) {
         return `
 
         <div class="link edit-form">
+            
+            <div class="edit-actions">
+                <select class="edit-category">
+                    ${
+                        state.data.categories
+                            .filter(category => category.system !== "trash")
+                            .sort(sortByName)
+                            .map(category => `
+                                <option
+                                    value="${category.id}"
+                                    ${category.id === item.categoryId ? "selected" : ""}
+                                >
+                                    📂 ${category.name}
+                                </option>
+                            `)
+                            .join("")
+                    }
+                </select>
+
+                <button
+                    data-action="save-edit"
+                    data-id="${item.id}">
+                    💾
+                </button>
+
+                <button
+                    data-action="cancel-edit">
+                    ❌
+                </button>
+            </div>
+            
+            
 
             <input
                 class="edit-title"
@@ -1661,34 +1722,6 @@ function renderLink(item, number) {
                 class="edit-note"
                 placeholder="Note">${item.note ?? ""}</textarea>
                 
-            <select class="edit-category">
-                ${
-                    state.data.categories
-                        .filter(category => category.system !== "trash")
-                        .sort(sortByName)
-                        .map(category => `
-                            <option
-                                value="${category.id}"
-                                ${category.id === item.categoryId ? "selected" : ""}
-                            >
-                                📂 ${category.name}
-                            </option>
-                        `)
-                        .join("")
-                }
-            </select>
-
-            <button
-                data-action="save-edit"
-                data-id="${item.id}">
-                💾
-            </button>
-
-            <button
-                data-action="cancel-edit">
-                ❌
-            </button>
-
         </div>
 
         `;
@@ -1794,7 +1827,10 @@ function renderLink(item, number) {
             ${
                 item.note
                 ?
-                `<div class="note">📜 ${item.note}</div>`
+                `<div
+                    class="note link-note"
+                    data-id="${item.id}">📜 ${item.note}
+                </div>`
                 :
                 ""
             }
@@ -1970,6 +2006,13 @@ function renderAddForm(category) {
     return `
 
     <div class="link add-form">
+        
+        <button
+            style="display: block; margin-left: auto;"
+            data-action="save-link"
+            data-id="${category.id}">
+            💾 Save
+        </button>
 
         <input
             class="new-title"
@@ -1994,12 +2037,6 @@ function renderAddForm(category) {
         <textarea
             class="new-note"
             placeholder="Note"></textarea>
-
-        <button
-            data-action="save-link"
-            data-id="${category.id}">
-            💾 Save
-        </button>
 
     </div>
 
@@ -2622,8 +2659,48 @@ function scrollBottomPage(){
 }
 
 
+let noteMouseDownX = 0;
+let noteMouseDownY = 0;
+
+function handleNoteMouseDown(e) {
+
+    const note = e.target.closest(".link-note");
+
+    if(!note)
+        return;
+
+    noteMouseDownX = e.clientX;
+    noteMouseDownY = e.clientY;
+}
+
+
+function handleNoteClick(e) {
+
+    const note = e.target.closest(".link-note");
+
+    if(!note)
+        return;
+        
+    const dx = Math.abs(e.clientX - noteMouseDownX);
+    const dy = Math.abs(e.clientY - noteMouseDownY);
+
+    // Если мышь двигалась — это выделение текста, а не клик
+    if(dx > 5 || dy > 5)
+        return;
+        
+    const selection = window.getSelection();
+
+    if(selection && selection.toString().length > 0)
+        return;
+
+    note.classList.toggle("expanded");
+}
+
 
 function handleClick(e) {
+    
+    handleNoteMouseDown(e)
+    handleNoteClick(e)
 
     const button = e.target.closest("button");
 
