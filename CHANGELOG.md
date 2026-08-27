@@ -5,6 +5,12 @@ All notable changes to Ligiloji are documented in this file.
 The project is currently under active development, so the format
 and release process may evolve over time.
 
+## [v0.2.0] - 2026-08-27
+
+### Added
+
+- MarkDown-editor in notes
+
 ## [v0.1.3] - 2026-08-26
 
 ### Added
