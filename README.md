@@ -69,7 +69,7 @@ Encrypted data also remains encrypted in the temporary storage.
 
 When the file is saved, the temporary data is automatically cleared.
 
-The reliability of temporary saving depends on the settings of a specific browser and may be unstable.
+> The reliability of temporary saving depends on the settings of a specific browser and may be unstable.
 
 **In the new versions, the autobackup has been replaced with manual saving via the “Temp save” button.**
 

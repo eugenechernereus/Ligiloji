@@ -45,6 +45,19 @@ select {
     font-family: inherit;
 }
 
+/* ---------- TITLE BAR ---------- */
+
+.title-bar {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+}
+
+.title-bar h1 {
+    flex:1;
+    min-width:0;
+}
 
 /* ---------- TITLE ---------- */
 
@@ -568,6 +581,14 @@ button:active {
         margin:0 0 6px;
         padding:5px 0;
     }
+    
+    .title-bar {
+        gap:5px;
+    }
+
+    .title-bar button {
+        flex:0 0 auto;
+    }
 
     .controls {
         padding:5px;
@@ -843,7 +864,16 @@ body[data-theme="warm"] .note.markdown pre {
 <body>
 
 
-<h1 id="title"></h1>
+<div class="title-bar">
+    <h1 id="title"></h1>
+
+    <button
+        data-action="theme"
+        title="Switch theme"
+    >
+        Silver
+    </button>
+</div>
 
 
 <div class="controls">
@@ -874,11 +904,10 @@ body[data-theme="warm"] .note.markdown pre {
         🧹 Clear all
     </button>
     
-    <button data-action="theme" title="Switch theme">
-        Silver
+    <button data-action="save-temp">
+        📸 Temp save
     </button>
-
-
+    
 </div>
 
 
@@ -1019,7 +1048,14 @@ function updateTitle(){
 function markChanged(){
     state.ui.dirty = true;
     updateTitle();
-    saveTempData();
+
+    const button =
+        document.querySelector(
+            '[data-action="save-temp"]'
+        );
+
+    if(button)
+        button.textContent = "📸 TEMP SAVE";
 }
 
 function markSaved(){
@@ -1036,66 +1072,55 @@ const TEMP_SAVE_KEY =
     "ligiloji_temp_v1_" +
     encodeURIComponent(location.pathname);
 
-let tempSaveTimer = null;
-let tempSaveVersion = 0;
+async function saveTempData(){
 
+    try {
 
-function saveTempData(){
+        let tempData;
 
-    clearTimeout(tempSaveTimer);
+        /*
+         * Если база открыта паролем,
+         * временная копия тоже шифруется.
+         */
+        if(state.ui.sessionPassword){
 
-    tempSaveTimer = setTimeout(async () => {
+            tempData =
+                await encryptData(
+                    state.data,
+                    state.ui.sessionPassword
+                );
 
-        const version = ++tempSaveVersion;
+        } else {
 
-        try {
-
-            let tempData;
-
-            /*
-             * Если база открыта паролем,
-             * временная копия тоже шифруется.
-             */
-            if(state.ui.sessionPassword){
-
-                tempData =
-                    await encryptData(
-                        state.data,
-                        state.ui.sessionPassword
-                    );
-
-            } else {
-
-                tempData = state.data;
-            }
-
-            /*
-             * Если за время шифрования появились
-             * новые изменения — эту копию не сохраняем.
-             */
-            if(version !== tempSaveVersion)
-                return;
-
-            localStorage.setItem(
-                TEMP_SAVE_KEY,
-                JSON.stringify({
-                    version: 1,
-                    timestamp: Date.now(),
-                    encrypted: !!state.ui.sessionPassword,
-                    data: tempData
-                })
-            );
+            tempData = state.data;
         }
+
+        localStorage.setItem(
+            TEMP_SAVE_KEY,
+            JSON.stringify({
+                version: 1,
+                timestamp: Date.now(),
+                encrypted: !!state.ui.sessionPassword,
+                data: tempData
+            })
+        );
         
-        catch(e){
-
-            console.warn(
-                "Ligiloji temporary save failed:",
-                e
+        const button =
+            document.querySelector(
+                '[data-action="save-temp"]'
             );
-        }
 
-    }, 500);
+        if(button)
+            button.textContent = "📸 Temp save";
+    }
+
+    catch(e){
+
+        console.warn(
+            "Ligiloji temporary save failed:",
+            e
+        );
+    }
 }
 
 
@@ -1142,10 +1167,6 @@ function getTempData(){
 
 
 function clearTempData(){
-
-    clearTimeout(tempSaveTimer);
-
-    tempSaveVersion++;
 
     localStorage.removeItem(
         TEMP_SAVE_KEY
@@ -3230,6 +3251,11 @@ function handleClick(e) {
         return;
     }
     
+    if(action === "save-temp") {
+        saveTempData();
+        return;
+    }
+    
     if(action === "save-link") {
         saveCategoryLink(
             id,
@@ -3418,6 +3444,23 @@ async function deriveKey(password, salt){
 }
 
 
+function bytesToBase64(bytes) {
+    let binary = "";
+    const chunkSize = 0x8000;
+
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+        const chunk = bytes.subarray(
+            i,
+            Math.min(i + chunkSize, bytes.length)
+        );
+
+        binary += String.fromCharCode(...chunk);
+    }
+
+    return btoa(binary);
+}
+
+
 async function encryptData(data, password){
 
     const enc =
@@ -3451,27 +3494,11 @@ async function encryptData(data, password){
             )
         );
 
-
     return {
-
-        encrypted:true,
-
-        salt:
-            btoa(
-                String.fromCharCode(...salt)
-            ),
-
-        iv:
-            btoa(
-                String.fromCharCode(...iv)
-            ),
-
-        data:
-            btoa(
-                String.fromCharCode(
-                    ...new Uint8Array(encrypted)
-                )
-            )
+        encrypted: true,
+        salt: bytesToBase64(salt),
+        iv: bytesToBase64(iv),
+        data: bytesToBase64(new Uint8Array(encrypted))
     };
 }
 
