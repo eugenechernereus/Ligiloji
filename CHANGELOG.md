@@ -5,6 +5,21 @@ All notable changes to Ligiloji are documented in this file.
 The project is currently under active development, so the format
 and release process may evolve over time.
 
+## [v0.2.2] - 2026-08-31
+
+### Added
+
+- Fixed the encryption of large data
+- Replaced temporary auto-save with manual saving
+
+## [v0.2.1] - 2026-08-28
+
+### Added
+
+- Hide scroll-buttons in textarea
+- Fixed md
+- Adjusted text notes
+
 ## [v0.2.0] - 2026-08-27
 
 ### Added
@@ -22,7 +37,7 @@ and release process may evolve over time.
 
 ### Added
 
-- Adjusting sizes and fonts
+- Adjusted sizes and fonts
 - Temporary auto‑saving of changes
 
 ## [v0.1.1] - 2026-08-14

@@ -69,6 +69,10 @@ Encrypted data also remains encrypted in the temporary storage.
 
 When the file is saved, the temporary data is automatically cleared.
 
+The reliability of temporary saving depends on the settings of a specific browser and may be unstable.
+
+**In the new versions, the autobackup has been replaced with manual saving via the “Temp save” button.**
+
 ## Deleting elements
 
 When a section or category is deleted, it is removed along with all its contents, and there is no way to restore it.

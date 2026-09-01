@@ -73,12 +73,10 @@ select {
     overflow-y:auto;
 
     padding:7px;
-
     background:#E1E4E7;
 
     border:1px solid #AEB4BA;
     border-radius:7px;
-
     box-shadow:
         inset -1px 0 0 rgba(255,255,255,.45),
         0 1px 3px rgba(35,40,45,.10);
@@ -95,10 +93,8 @@ select {
     padding:7px;
 
     background:#BFC4C9;
-
     border:1px solid #AEB4BA;
     border-radius:7px;
-
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,.20);
 }
@@ -108,9 +104,7 @@ select {
 
 h1 {
     color:#3E4348;
-
     font-size:23px;
-
     margin:0 0 6px;
     padding:5px 0;
 }
@@ -120,14 +114,11 @@ h1 {
 
 .controls {
     flex:0 0 auto;
-
     padding:7px;
 
     background:#D9DDE1;
-
     border:1px solid #AEB4BA;
     border-radius:7px;
-
     box-shadow:
         0 2px 5px rgba(35,40,45,.11);
 }
@@ -142,13 +133,11 @@ select {
     margin:5px;
 
     box-sizing:border-box;
-
     color:#292D31;
     background:#F5F6F7;
 
     border:1px solid #AEB4BA;
     border-radius:6px;
-
     outline:none;
 }
 
@@ -183,6 +172,12 @@ select {
     display:flex;
     justify-content:flex-end;
     gap:5px;
+    padding-right:50px;
+}
+
+.edit-note,
+.new-note {
+    font-size:15px;
 }
 
 
@@ -193,7 +188,6 @@ button {
 
     cursor:pointer;
     vertical-align:top;
-
     margin-top:5px;
 
     color:#34393E;
@@ -201,7 +195,6 @@ button {
 
     border:1px solid #A7AEB4;
     border-radius:6px;
-
     box-shadow:
         0 1px 2px rgba(35,40,45,.08);
 
@@ -214,9 +207,7 @@ button {
 
 button:hover {
     background:#C5CBD0;
-
     border-color:#929AA1;
-
     box-shadow:
         0 2px 4px rgba(35,40,45,.14);
 }
@@ -225,7 +216,6 @@ button:active {
     transform:translateY(1px);
 
     background:#B9C0C6;
-
     box-shadow:
         inset 0 1px 2px rgba(35,40,45,.12);
 }
@@ -247,7 +237,6 @@ button:active {
     padding:7px;
 
     border-radius:8px;
-
     box-shadow:
         0 2px 4px rgba(35,40,45,.18);
 }
@@ -260,9 +249,7 @@ button:active {
     color:#F3F4F5;
 
     padding:8px;
-
     border-radius:8px;
-
     box-shadow:
         0 1px 3px rgba(35,40,45,.14);
 }
@@ -277,9 +264,7 @@ button:active {
     padding:7px;
 
     border-radius:8px;
-
     border:1px solid #CDD2D6;
-
     box-shadow:
         0 2px 5px rgba(35,40,45,.13);
 
@@ -291,11 +276,15 @@ button:active {
 
 .link:hover {
     background:#F2F4F5;
-
     border-color:#BEC4C9;
-
     box-shadow:
         0 3px 7px rgba(35,40,45,.16);
+}
+
+.link-title {
+    flex:1 1 auto;
+    min-width:0;
+    overflow-wrap:anywhere;
 }
 
 
@@ -303,9 +292,7 @@ button:active {
 
 .link a {
     text-decoration:none;
-
     color:#356A9A;
-
     font-size:18px;
 }
 
@@ -325,7 +312,9 @@ button:active {
 
 .actions {
     display:flex;
-    gap:4px;
+    gap:5px;
+    margin-left:auto;
+    flex:0 0 auto;
 }
 
 
@@ -440,18 +429,17 @@ button:active {
 
 .link-note {
     cursor:pointer;
+    position:relative;
+    transition:background-color 0.2s ease;
 }
 
 .link-note:not(.expanded) {
     max-height:6em;
     overflow:hidden;
-    cursor:pointer;
+}
 
-    mask-image: linear-gradient(
-        to bottom,
-        black 70%,
-        transparent 100%
-    );
+.link-note:not(.expanded).has-more {
+    background:#E3E6E9;
 }
 
 
@@ -466,34 +454,26 @@ button:active {
     margin-bottom:4px;
 
     border:none;
-
     background:transparent;
-
     color:#41464B;
 
     text-align:left;
     cursor:pointer;
 
     border-radius:6px;
-
     box-shadow:none;
 }
 
 .toc-item:hover {
     background:#D1D6DA;
-
     color:#292D31;
-
     box-shadow:none;
 }
 
 .toc-item.active {
     background:#C1C7CC;
-
     color:#292D31;
-
     font-weight:bold;
-
     box-shadow:
         inset 3px 0 0 #68737D;
 }
@@ -506,9 +486,7 @@ button:active {
     padding:8px;
 
     font-weight:bold;
-
     color:#4D5359;
-
     border-bottom:1px solid #AEB4BA;
 }
 
@@ -526,12 +504,10 @@ button:active {
 
 .footer {
     flex:0 0 auto;
-
     padding:5px 10px;
 
     color:#656B72;
     font-size:12px;
-
     text-align:right;
 }
 
@@ -540,8 +516,8 @@ button:active {
 
 .scroll-buttons {
     position:fixed;
-    right:140px;
-    bottom:40px;
+    right:145px;
+    bottom:50px;
 
     display:flex;
     flex-direction:column;
@@ -551,8 +527,8 @@ button:active {
 }
 
 .scroll-buttons button {
-    width:42px;
-    height:42px;
+    width:40px;
+    height:40px;
 
     padding:0;
     margin:0;
@@ -561,11 +537,15 @@ button:active {
     font-weight:bold;
 
     border-radius:8px;
-    opacity:.70;
+    opacity:.50;
 }
 
 .scroll-buttons button:hover {
     opacity:1;
+}
+
+.scroll-buttons.hidden {
+    display:none;
 }
 
 
@@ -573,20 +553,14 @@ button:active {
 
 @media (max-width:700px) {
     
-    .scroll-buttons {
-        left: 50%;
-        bottom:30px;
-        transform: translateX(-50%);
-    }
-
-    .scroll-buttons button {
-        width:40px;
-        height:40px;
-    }
-
     body {
         padding:5px;
         overflow-x:hidden;
+    }
+    
+    .scroll-buttons {
+        right:125px;
+        bottom:40px;
     }
     
     h1 {
@@ -634,9 +608,7 @@ button:active {
 
     #content {
         padding:5px;
-
         overflow-y:visible;
-
         margin-left:0;
     }
 
@@ -650,12 +622,6 @@ button:active {
         align-items:center;
     }
 
-    .actions {
-        display:flex;
-        gap:5px;
-        margin-left:auto;
-    }
-
     .actions button {
         flex:0 0 auto;
         width:auto;
@@ -663,16 +629,6 @@ button:active {
 
     .link a {
         font-size:16px;
-        word-break:break-word;
-    }
-
-    .link-title {
-        flex:1;
-        min-width:0;
-    }
-
-    .link-title a {
-        word-break:break-word;
     }
 }
 
@@ -726,9 +682,9 @@ body[data-theme="warm"] .controls {
 body[data-theme="warm"] input,
 body[data-theme="warm"] textarea,
 body[data-theme="warm"] select {
-    color:#302F2C;
-    background:#F5F2EC;
-    border-color:#B9B3AA;
+    color: #302F2C;
+    background: #F5F2EC;
+    border-color: #B9B3AA;
 }
 
 body[data-theme="warm"] input::placeholder,
@@ -799,41 +755,84 @@ body[data-theme="warm"] .link:hover {
 }
 
 body[data-theme="warm"] .link a {
-    color:#356A9A;
+    color: #496F78;
 }
 
 body[data-theme="warm"] .link a:hover {
-    color:#244F76;
+    color: #244F76;
 }
 
 body[data-theme="warm"] .small {
-    color:#6D6962;
+    color: #6D6962;
 }
 
 body[data-theme="warm"] .number {
-    color:#777168;
+    color: #777168;
 }
 
 body[data-theme="warm"] .toc-item {
-    color:#45413C;
+    color: #45413C;
 }
 
 body[data-theme="warm"] .toc-item:hover {
-    background:#DCD6CE;
-    color:#302F2C;
+    background: #DCD6CE;
+    color: #302F2C;
 }
 
 body[data-theme="warm"] .toc-item.active {
-    background:#CFC6BA;
-    color:#302F2C;
+    background: #CFC6BA;
+    color: #302F2C;
 
     box-shadow:
         inset 3px 0 0 #8B6F55;
 }
 
 body[data-theme="warm"] .section-title {
-    color:#514C46;
-    border-color:#BEB8AF;
+    color: #514C46;
+    border-color: #BEB8AF;
+}
+
+body[data-theme="warm"] .link-note:not(.expanded).has-more {
+    background: #E6E3DB;
+}
+
+
+/* =========================
+   Markdown — Warm
+   ========================= */
+
+body[data-theme="warm"] .note.markdown {
+    color: #514E48;
+}
+
+body[data-theme="warm"] .note.markdown h1,
+body[data-theme="warm"] .note.markdown h2,
+body[data-theme="warm"] .note.markdown h3 {
+    margin: 10px 0 6px;
+    color: #48453F;
+    background: transparent;
+    box-shadow: none;
+}
+
+body[data-theme="warm"] .note.markdown blockquote {
+    border-left: 3px solid #A39D91;
+    color: #68645D;
+}
+
+body[data-theme="warm"] .note.markdown code {
+    background: #E3E0D7;
+}
+
+body[data-theme="warm"] .note.markdown hr {
+    border-top: 1px solid #B9B4AA;
+}
+
+body[data-theme="warm"] .note.markdown a {
+    color: #496F78;
+}
+
+body[data-theme="warm"] .note.markdown pre {
+    background: #E6E3DB;
 }
 
 
@@ -919,7 +918,7 @@ body[data-theme="warm"] .section-title {
 
 
 <footer class="footer">
-    Ligiloji © 2026 Eugene Chernereus  |  v0.2.0
+    Ligiloji © 2026 Eugene Chernereus  |  v0.2.1
 </footer>
 
 
@@ -1502,7 +1501,8 @@ function getFilteredLinks() {
 
         const text = [
             item.title,
-            item.login
+            item.login,
+            item.note
         ]
         .filter(Boolean)
         .join(" ")
@@ -1517,7 +1517,7 @@ function autoResizeTextarea(textarea){
 
     textarea.style.height = "auto";
 
-    var height = textarea.scrollHeight;
+    let height = textarea.scrollHeight;
 
     if(height > 500)
         height = 500;
@@ -1526,22 +1526,24 @@ function autoResizeTextarea(textarea){
 }
 
 
-document.addEventListener("input", function(e){
-
-    if(e.target.tagName === "TEXTAREA"){
-        autoResizeTextarea(e.target);
-    }
-
-});
-
-
 document.addEventListener("focusin", function(e){
 
     if(e.target.tagName === "TEXTAREA"){
         autoResizeTextarea(e.target);
     }
-
 });
+
+
+function updateNoteIndicators() {
+
+    document.querySelectorAll(".link-note").forEach(note => {
+
+        if(note.scrollHeight - note.clientHeight > 20)
+            note.classList.add("has-more");
+        else
+            note.classList.remove("has-more");
+    });
+}
 
 
 // главный вывод
@@ -1645,6 +1647,7 @@ function render() {
     requestAnimationFrame(()=>{
         focusFirstInput();
     });
+    updateNoteIndicators();
 }
 
 
@@ -1765,7 +1768,7 @@ function isTrashLink(item){
 
 
 function escapeHtml(text){
-    var div = document.createElement("div");
+    const div = document.createElement("div");
     div.textContent = String(text ?? "");
     return div.innerHTML;
 }
@@ -1960,7 +1963,7 @@ function renderMarkdown(text){
         /* ---------- ORDERED LIST ---------- */
 
         match =
-            line.match(/^\d+\.\s+(.+)$/);
+            line.match(/^(\d+)\.\s+(.+)$/);
 
         if(match){
 
@@ -1978,8 +1981,13 @@ function renderMarkdown(text){
                 inOl = true;
             }
 
+            const number = parseInt(match[1], 10);
+            const content = match[2];
+
             html +=
-                `<li>${inlineMarkdown(match[1])}</li>`;
+                `<li value="${number}">
+                    ${inlineMarkdown(content)}
+                </li>`;
 
             continue;
         }
@@ -2072,8 +2080,7 @@ function renderLink(item, number) {
                     ❌
                 </button>
             </div>
-            
-            
+                        
 
             <input
                 class="edit-title"
@@ -2414,7 +2421,7 @@ function renderAddForm(category) {
 
         <input
             class="new-password"
-            placeholder="Pass">
+            placeholder="Password">
 
         <br>
         
@@ -2493,10 +2500,12 @@ function showAddForm(categoryId) {
 
     if(state.ui.activeCategoryId === categoryId) {
         state.ui.activeCategoryId = null;
+        showScrollButtons();
     }
     
     else {
         state.ui.activeCategoryId = categoryId;
+        hideScrollButtons();
     }
 
     render();
@@ -2508,11 +2517,12 @@ function cancelEdit() {
     state.ui.editId = null;
 
     render();
+    showScrollButtons();
 }
 
 
 function saveEdit(id, button) {
-
+    
     const item =
         state.data.links.find(
             item => item.id === id
@@ -2544,7 +2554,7 @@ function saveEdit(id, button) {
     state.ui.editId = null;
     
     markChanged()
-
+    
     render();
 }
 
@@ -2845,8 +2855,7 @@ function handleKeydown(e){
     if(e.key === "Escape"){
 
         if(state.ui.editId){
-            state.ui.editId = null;
-            render();
+            cancelEdit();
             return;
         }
 
@@ -2899,7 +2908,7 @@ function handleKeydown(e){
 
 
 function saveForm(button){
-
+    
     const form = button.closest(".link");
         
     const data = state.ui.form;
@@ -2924,9 +2933,9 @@ function saveForm(button){
         state.ui.form = null;
         
         markChanged();
-
+        
         render();
-
+        
         return;
     }
 
@@ -3081,6 +3090,24 @@ function handleNoteClick(e) {
 }
 
 
+function hideScrollButtons(){
+    const buttons =
+        document.querySelector(".scroll-buttons");
+
+    if(buttons)
+        buttons.classList.add("hidden");
+}
+
+
+function showScrollButtons(){
+    const buttons =
+        document.querySelector(".scroll-buttons");
+
+    if(buttons)
+        buttons.classList.remove("hidden");
+}
+
+
 function handleClick(e) {
     
     handleNoteMouseDown(e)
@@ -3129,7 +3156,6 @@ function handleClick(e) {
         return;
     }
 
-
     if(action === "theme"){
         toggleTheme();
         return;
@@ -3150,6 +3176,7 @@ function handleClick(e) {
     }
 
     if(action === "edit") {
+        hideScrollButtons();
         editLink(id);
         return;
     }
@@ -3164,6 +3191,7 @@ function handleClick(e) {
             id,
             button
         );
+        showScrollButtons();
         return;
     }
 
@@ -3207,6 +3235,7 @@ function handleClick(e) {
             id,
             button
         );
+        showScrollButtons();
         return;
     }
     
