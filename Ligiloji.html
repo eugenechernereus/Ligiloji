@@ -411,6 +411,33 @@ button:active {
     font-family:monospace;
 }
 
+.code-block {
+    position:relative;
+}
+
+.code-block pre {
+    margin:8px 0;
+    padding:10px;
+    padding-right:45px;
+    overflow-x:auto;
+    background:#E1E4E7;
+    border-radius:5px;
+}
+
+.copy-code-btn {
+    position:absolute;
+    top:10px;
+    right:10px;
+    margin:0;
+    padding:4px 7px;
+    font-size:14px;
+    opacity:.55;
+}
+
+.copy-code-btn:hover {
+    opacity:1;
+}
+
 .note.markdown h1 {
     font-size:1.5em;
     line-height:1.2;
@@ -453,6 +480,42 @@ button:active {
 
 .link-note:not(.expanded).has-more {
     background:#E3E6E9;
+}
+
+/* ---------- ENCRYPTED NOTE ---------- */
+
+.note-crypto {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:5px;
+    margin:2px 5px 5px;
+}
+
+.note-crypto input {
+    flex:1 1 180px;
+    min-width:150px;
+    margin:0;
+}
+
+.note-crypto button {
+    margin-top:0;
+}
+
+.note-crypto-status {
+    flex:1 1 100%;
+    min-height:18px;
+    font-size:13px;
+    color:#656B72;
+}
+
+.note-crypto-status.error {
+    color:#B33A3A;
+}
+
+.note-encrypted {
+    font-family:monospace;
+    word-break:break-all;
 }
 
 
@@ -703,9 +766,9 @@ body[data-theme="warm"] .controls {
 body[data-theme="warm"] input,
 body[data-theme="warm"] textarea,
 body[data-theme="warm"] select {
-    color: #302F2C;
-    background: #F5F2EC;
-    border-color: #B9B3AA;
+    color:#302F2C;
+    background:#F5F2EC;
+    border-color:#B9B3AA;
 }
 
 body[data-theme="warm"] input::placeholder,
@@ -776,45 +839,45 @@ body[data-theme="warm"] .link:hover {
 }
 
 body[data-theme="warm"] .link a {
-    color: #496F78;
+    color:#496F78;
 }
 
 body[data-theme="warm"] .link a:hover {
-    color: #244F76;
+    color:#244F76;
 }
 
 body[data-theme="warm"] .small {
-    color: #6D6962;
+    color:#6D6962;
 }
 
 body[data-theme="warm"] .number {
-    color: #777168;
+    color:#777168;
 }
 
 body[data-theme="warm"] .toc-item {
-    color: #45413C;
+    color:#45413C;
 }
 
 body[data-theme="warm"] .toc-item:hover {
-    background: #DCD6CE;
-    color: #302F2C;
+    background:#DCD6CE;
+    color:#302F2C;
 }
 
 body[data-theme="warm"] .toc-item.active {
-    background: #CFC6BA;
-    color: #302F2C;
+    background:#CFC6BA;
+    color:#302F2C;
 
     box-shadow:
         inset 3px 0 0 #8B6F55;
 }
 
 body[data-theme="warm"] .section-title {
-    color: #514C46;
-    border-color: #BEB8AF;
+    color:#514C46;
+    border-color:#BEB8AF;
 }
 
 body[data-theme="warm"] .link-note:not(.expanded).has-more {
-    background: #E6E3DB;
+    background:#E6E3DB;
 }
 
 
@@ -823,37 +886,41 @@ body[data-theme="warm"] .link-note:not(.expanded).has-more {
    ========================= */
 
 body[data-theme="warm"] .note.markdown {
-    color: #514E48;
+    color:#514E48;
 }
 
 body[data-theme="warm"] .note.markdown h1,
 body[data-theme="warm"] .note.markdown h2,
 body[data-theme="warm"] .note.markdown h3 {
-    margin: 10px 0 6px;
-    color: #48453F;
-    background: transparent;
-    box-shadow: none;
+    margin:10px 0 6px;
+    color:#48453F;
+    background:transparent;
+    box-shadow:none;
 }
 
 body[data-theme="warm"] .note.markdown blockquote {
-    border-left: 3px solid #A39D91;
-    color: #68645D;
+    border-left:3px solid #A39D91;
+    color:#68645D;
 }
 
 body[data-theme="warm"] .note.markdown code {
-    background: #E3E0D7;
+    background:#E3E0D7;
 }
 
 body[data-theme="warm"] .note.markdown hr {
-    border-top: 1px solid #B9B4AA;
+    border-top:1px solid #B9B4AA;
 }
 
 body[data-theme="warm"] .note.markdown a {
-    color: #496F78;
+    color:#496F78;
 }
 
 body[data-theme="warm"] .note.markdown pre {
-    background: #E6E3DB;
+    background:#E6E3DB;
+}
+
+body[data-theme="warm"] .code-block pre {
+    background:#E6E3DB;
 }
 
 
@@ -947,7 +1014,7 @@ body[data-theme="warm"] .note.markdown pre {
 
 
 <footer class="footer">
-    Ligiloji © 2026 Eugene Chernereus  |  v0.2.2
+    Ligiloji © 2026 Eugene Chernereus  |  v0.3.0
 </footer>
 
 
@@ -1061,6 +1128,14 @@ function markChanged(){
 function markSaved(){
     state.ui.dirty = false;
     updateTitle();
+    
+    const button =
+        document.querySelector(
+            '[data-action="save-temp"]'
+        );
+
+    if(button)
+        button.textContent = "📸 Temp save";
 }
 
 
@@ -1071,6 +1146,7 @@ function markSaved(){
 const TEMP_SAVE_KEY =
     "ligiloji_temp_v1_" +
     encodeURIComponent(location.pathname);
+
 
 async function saveTempData(){
 
@@ -1889,7 +1965,13 @@ function renderMarkdown(text){
             }else{
 
                 html +=
-                    `<pre><code>${escapeHtml(codeBuffer.join("\n"))}</code></pre>`;
+                    `<div class="code-block">
+                        <button
+                            class="copy-code-btn"
+                            data-action="copy-code">⧉
+                        </button>
+                        <pre><code>${escapeHtml(codeBuffer.join("\n"))}</code></pre>
+                    </div>`;
 
                 inCodeBlock = false;
                 codeBuffer = [];
@@ -2044,7 +2126,13 @@ function renderMarkdown(text){
     if(inCodeBlock){
 
         html +=
-            `<pre><code>${escapeHtml(codeBuffer.join("\n"))}</code></pre>`;
+            `<div class="code-block">
+                <button
+                    class="copy-code-btn"
+                    data-action="copy-code">⧉
+                </button>
+                <pre><code>${escapeHtml(codeBuffer.join("\n"))}</code></pre>
+            </div>`;
     }
 
     flushParagraph();
@@ -2060,6 +2148,29 @@ function shortUrl(url, max = 40){
         return url;
 
     return url.slice(0, max) + "...";
+}
+
+
+function renderNote(note) {
+
+    if(!note)
+        return "";
+
+    if(
+        String(note)
+            .startsWith(
+                NOTE_CRYPTO_PREFIX
+            )
+    ) {
+
+        return `
+            <span class="note-encrypted">
+                🔐 ${NOTE_CRYPTO_PREFIX}
+            </span>
+        `;
+    }
+
+    return renderMarkdown(note);
 }
 
 
@@ -2129,7 +2240,31 @@ function renderLink(item, number) {
             
             <textarea
                 class="edit-note"
-                placeholder="Note">${item.note ?? ""}</textarea>
+                placeholder="Note">${escapeHtml(item.note ?? "")}</textarea>
+
+            <div class="note-crypto">
+
+                <input
+                    type="search"
+                    class="note-password"
+                    placeholder="Note password"
+                    autocomplete="off">
+
+                <button
+                    type="button"
+                    data-action="encrypt-note">
+                    🔒 Encrypt
+                </button>
+
+                <button
+                    type="button"
+                    data-action="decrypt-note">
+                    🔓 Decrypt
+                </button>
+
+                <div class="note-crypto-status"></div>
+
+            </div>
                 
         </div>
 
@@ -2239,7 +2374,7 @@ function renderLink(item, number) {
                 `<div
                     class="note markdown link-note"
                     data-id="${item.id}">
-                    📜 ${renderMarkdown(item.note)}
+                    📜 ${renderNote(item.note)}
                 </div>`
                 :
                 ""
@@ -2449,6 +2584,30 @@ function renderAddForm(category) {
         <textarea
             class="new-note"
             placeholder="Note"></textarea>
+
+        <div class="note-crypto">
+
+            <input
+                type="search"
+                class="note-password"
+                placeholder="Note password"
+                autocomplete="off">
+
+            <button
+                type="button"
+                data-action="encrypt-note">
+                🔒 Encrypt
+            </button>
+
+            <button
+                type="button"
+                data-action="decrypt-note">
+                🔓 Decrypt
+            </button>
+
+            <div class="note-crypto-status"></div>
+
+        </div>
 
     </div>
 
@@ -2872,6 +3031,50 @@ document.addEventListener(
 
 
 function handleKeydown(e){
+    
+    if(
+        e.key === "Enter" &&
+        e.target.classList.contains("note-password")
+    ){
+        e.preventDefault();
+
+        const form =
+            e.target.closest(
+                ".edit-form, .add-form"
+            );
+
+        if(!form)
+            return;
+
+        const textarea =
+            form.querySelector(
+                ".edit-note, .new-note"
+            );
+
+        if(!textarea)
+            return;
+
+        const text =
+            textarea.value.trim();
+
+        const action =
+            text.startsWith(
+                NOTE_CRYPTO_PREFIX
+            )
+            ? "decrypt-note"
+            : "encrypt-note";
+
+        const button =
+            form.querySelector(
+                `[data-action="${action}"]`
+            );
+
+        if(button){
+            button.click();
+        }
+
+        return;
+    }
 
     if(e.key === "Escape"){
 
@@ -3131,10 +3334,22 @@ function showScrollButtons(){
 
 function handleClick(e) {
     
-    handleNoteMouseDown(e)
-    handleNoteClick(e)
-
     const button = e.target.closest("button");
+
+    if (button && button.dataset.action === "copy-code") {
+        e.stopPropagation();
+
+        const code = button
+            .closest(".code-block")
+            .querySelector("code")
+            .textContent;
+
+        copyText(code, button);
+        return;
+    }
+    
+    handleNoteMouseDown(e);
+    handleNoteClick(e);
 
     if(!button)
         return;
@@ -3167,6 +3382,16 @@ function handleClick(e) {
     
     const action = button.dataset.action;
     
+    if(action === "encrypt-note") {
+        encryptNoteFromForm(button);
+        return;
+    }
+
+    if(action === "decrypt-note") {
+        decryptNoteFromForm(button);
+        return;
+    }
+    
     if(action === "scroll-top"){
         scrollTopPage();
         return;
@@ -3195,7 +3420,7 @@ function handleClick(e) {
         copyPassword(id, button);
         return;
     }
-
+    
     if(action === "edit") {
         hideScrollButtons();
         editLink(id);
@@ -3545,6 +3770,332 @@ async function decryptData(obj,password){
     return JSON.parse(
         dec.decode(result)
     );
+}
+
+
+// ==========================
+// NOTE CRYPTO
+// ==========================
+
+const NOTE_CRYPTO_PREFIX = "ENCRj:";
+
+function base64ToBytes(str) {
+
+    const binary = atob(str);
+
+    const bytes =
+        new Uint8Array(binary.length);
+
+    for(let i = 0; i < binary.length; i++) {
+        bytes[i] =
+            binary.charCodeAt(i);
+    }
+
+    return bytes;
+}
+
+
+async function encryptNote(text, password) {
+
+    const enc =
+        new TextEncoder();
+
+    const salt =
+        crypto.getRandomValues(
+            new Uint8Array(16)
+        );
+
+    const iv =
+        crypto.getRandomValues(
+            new Uint8Array(12)
+        );
+
+    const key =
+        await deriveKey(
+            password,
+            salt
+        );
+
+    const encrypted =
+        await crypto.subtle.encrypt(
+            {
+                name:"AES-GCM",
+                iv:iv
+            },
+            key,
+            enc.encode(text)
+        );
+
+    const result =
+        new Uint8Array(
+            salt.length +
+            iv.length +
+            encrypted.byteLength
+        );
+
+    result.set(
+        salt,
+        0
+    );
+
+    result.set(
+        iv,
+        salt.length
+    );
+
+    result.set(
+        new Uint8Array(encrypted),
+        salt.length + iv.length
+    );
+
+    return (
+        NOTE_CRYPTO_PREFIX +
+        bytesToBase64(result)
+    );
+}
+
+
+async function decryptNote(text, password) {
+
+    if(
+        !text.startsWith(
+            NOTE_CRYPTO_PREFIX
+        )
+    ) {
+        throw new Error(
+            "Not an encrypted note"
+        );
+    }
+
+    const data =
+        base64ToBytes(
+            text.substring(
+                NOTE_CRYPTO_PREFIX.length
+            )
+        );
+
+    if(
+        data.length < 16 + 12 + 16
+    ) {
+        throw new Error(
+            "Invalid encrypted note"
+        );
+    }
+
+    const salt =
+        data.slice(0, 16);
+
+    const iv =
+        data.slice(16, 28);
+
+    const encrypted =
+        data.slice(28);
+
+    const key =
+        await deriveKey(
+            password,
+            salt
+        );
+
+    const decrypted =
+        await crypto.subtle.decrypt(
+            {
+                name:"AES-GCM",
+                iv:iv
+            },
+            key,
+            encrypted
+        );
+
+    return new TextDecoder().decode(
+        decrypted
+    );
+}
+
+
+async function encryptNoteFromForm(button) {
+
+    const form =
+        button.closest(
+            ".edit-form, .add-form"
+        );
+
+    if(!form)
+        return;
+
+    const textarea =
+        form.querySelector(
+            ".edit-note, .new-note"
+        );
+
+    const passwordInput =
+        form.querySelector(
+            ".note-password"
+        );
+
+    const status =
+        form.querySelector(
+            ".note-crypto-status"
+        );
+
+    const text =
+        textarea.value;
+
+    const password =
+        passwordInput.value;
+
+    if(!text) {
+
+        status.textContent =
+            "Enter note text";
+
+        status.classList.add("error");
+
+        return;
+    }
+
+    if(!password) {
+
+        status.textContent =
+            "Enter note password";
+
+        status.classList.add("error");
+
+        return;
+    }
+
+    try {
+
+        button.disabled = true;
+
+        status.classList.remove("error");
+
+        status.textContent =
+            "🔒 Encrypting...";
+
+        textarea.value =
+            await encryptNote(
+                text,
+                password
+            );
+
+        status.textContent =
+            "✓ Note encrypted";
+
+    }
+    catch(e) {
+
+        console.error(e);
+
+        status.textContent =
+            "✗ Encryption error";
+
+        status.classList.add("error");
+
+    }
+    finally {
+
+        button.disabled = false;
+    }
+}
+
+
+async function decryptNoteFromForm(button) {
+
+    const form =
+        button.closest(
+            ".edit-form, .add-form"
+        );
+
+    if(!form)
+        return;
+
+    const textarea =
+        form.querySelector(
+            ".edit-note, .new-note"
+        );
+
+    const passwordInput =
+        form.querySelector(
+            ".note-password"
+        );
+
+    const status =
+        form.querySelector(
+            ".note-crypto-status"
+        );
+
+    const text =
+        textarea.value.trim();
+
+    const password =
+        passwordInput.value;
+
+    if(!text) {
+
+        status.textContent =
+            "Enter encrypted note";
+
+        status.classList.add("error");
+
+        return;
+    }
+
+    if(
+        !text.startsWith(
+            NOTE_CRYPTO_PREFIX
+        )
+    ) {
+
+        status.textContent =
+            "This note is not encrypted";
+
+        status.classList.add("error");
+
+        return;
+    }
+
+    if(!password) {
+
+        status.textContent =
+            "Enter note password";
+
+        status.classList.add("error");
+
+        return;
+    }
+
+    try {
+
+        button.disabled = true;
+
+        status.classList.remove("error");
+
+        status.textContent =
+            "🔓 Decrypting...";
+
+        textarea.value =
+            await decryptNote(
+                text,
+                password
+            );
+
+        status.textContent =
+            "✓ Note decrypted";
+    }
+    catch(e) {
+
+        console.error(e);
+
+        status.textContent =
+            "✗ Wrong password or damaged note";
+
+        status.classList.add("error");
+    }
+    finally {
+
+        button.disabled = false;
+    }
 }
 
 
