@@ -5,6 +5,12 @@ All notable changes to Ligiloji are documented in this file.
 The project is currently under active development, so the format
 and release process may evolve over time.
 
+## [v0.3.1] - 2026-09-08
+
+### Added
+
+- Stretchable content area
+
 ## [v0.3.0] - 2026-09-02
 
 ### Added

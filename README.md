@@ -6,21 +6,6 @@ No account. No server. No database. Offline. One self-contained HTML file with e
 
 The application runs directly in any web browser and does not require a server or installation.
 
-## Features
-
-- 📁 Organize information into sections
-- 🗂️ Create categories
-- 🔗 Store and manage links, passwords, notes
-- 🔎 Search through stored content
-- ⬆️ Export data to JSON
-- ⬇️ Import data from JSON
-- 💾 Save the current application and data as an HTML file
-- 🔐 Optional password-protected data
-- 🎨 Silver and Gold visual themes
-- 🗑️ Built-in trash handling
-- 📄 Self-contained single-file architecture
-- 🌐 Runs directly in a modern browser
-
 ## Getting Started
 
 ### 1. Download
@@ -39,7 +24,7 @@ Create sections, categories add notes.
 
 ## Search
 
-The search works by name and login within the selected category.
+The search works by name, login and notes within the selected category.
 
 To use the global search, select "Catalog".
 
@@ -59,11 +44,11 @@ Data can be exported to JSON and imported back into Ligiloji.
 
 To create a new database, it is enough to clear all, add new data and save a new file.
 
-Although the number of notes is not technically limited, it is not recommended to store more than 5,000 entries in a single file.
+There is no technical limit on the amount of data that can be stored, but very large datasets may affect performance, depending on the device and browser.
 
-## Autobackup
+## Temp-backup
 
-When any changes are made, the browser temporarily saves them in ‘lockalstorage’. If the page is accidentally closed, the changes will be saved and can be restored the next time the application is opened (provided that the browser data has not been cleared).
+When any changes are made, the browser temporarily can saves them in ‘lockalstorage’. If the page is accidentally closed, the changes will be saved and can be restored the next time the application is opened (provided that the browser data has not been cleared).
 
 Encrypted data also remains encrypted in the temporary storage.
 
@@ -71,7 +56,7 @@ When the file is saved, the temporary data is automatically cleared.
 
 > The reliability of temporary saving depends on the settings of a specific browser and may be unstable.
 
-**In the new versions, the autobackup has been replaced with manual saving via the “Temp save” button.**
+**Starting from version 0.2.2, the autobackup has been replaced with manual saving via the “Temp save” button.**
 
 ## Deleting elements
 

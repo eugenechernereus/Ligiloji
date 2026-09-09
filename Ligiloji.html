@@ -42,7 +42,7 @@ button,
 input,
 textarea,
 select {
-    font-family: inherit;
+    font-family:inherit;
 }
 
 /* ---------- TITLE BAR ---------- */
@@ -76,6 +76,37 @@ select {
     flex:1;
     display:flex;
     overflow:hidden;
+}
+
+
+/* ---------- EXPANDED CONTENT ---------- */
+
+body.content-expanded .controls,
+body.content-expanded #toc,
+body.content-expanded .footer {
+    display:none;
+}
+
+body.content-expanded .main {
+    flex:1;
+    min-height:0;
+}
+
+body.content-expanded #content {
+    flex:1;
+    width:100%;
+    margin-left:0;
+    box-sizing:border-box;
+}
+
+.title-bar button[data-action="toggle-content"] {
+    width:32px;
+    min-width:32px;
+    height:32px;
+    padding: 0;
+    margin-left: 4px;
+    font-size: 16px;
+    line-height: 1;
 }
 
 
@@ -940,6 +971,12 @@ body[data-theme="warm"] .code-block pre {
     >
         Silver
     </button>
+
+    <button
+        data-action="toggle-content"
+        title="Expand content"
+    >⛶
+    </button>
 </div>
 
 
@@ -1014,7 +1051,7 @@ body[data-theme="warm"] .code-block pre {
 
 
 <footer class="footer">
-    Ligiloji © 2026 Eugene Chernereus  |  v0.3.0
+    Ligiloji © 2026 Eugene Chernereus  |  v0.3.1
 </footer>
 
 
@@ -3404,6 +3441,19 @@ function handleClick(e) {
 
     if(action === "theme"){
         toggleTheme();
+        return;
+    }
+    
+    if(action === "toggle-content"){
+        const expanded =
+            document.body.classList.toggle(
+                "content-expanded"
+            );
+
+        button.title =
+            expanded
+                ? "Collapse content"
+                : "Expand content";
         return;
     }
 
