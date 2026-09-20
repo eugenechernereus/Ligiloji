@@ -103,10 +103,10 @@ body.content-expanded #content {
     width:32px;
     min-width:32px;
     height:32px;
-    padding: 0;
-    margin-left: 4px;
-    font-size: 16px;
-    line-height: 1;
+    padding:0;
+    margin-left:4px;
+    font-size:16px;
+    line-height:1;
 }
 
 
@@ -331,6 +331,32 @@ button:active {
     overflow-wrap:anywhere;
 }
 
+.category-toggle,
+.expand-toggle {
+    width:24px;
+    height:24px;
+    padding:0;
+    margin-right:4px;
+
+    border:0;
+    background:transparent;
+
+    color:inherit;
+    cursor:pointer;
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:12px;
+}
+
+.category-toggle:hover,
+.expand-toggle:hover {
+    background:#E3E6E9;
+    border-radius:4px;
+}
+
 
 /* ---------- LINKS ---------- */
 
@@ -352,6 +378,7 @@ button:active {
     display:flex;
     justify-content:space-between;
     align-items:center;
+    border-top:1px solid #05002A;
 }
 
 .actions {
@@ -498,20 +525,6 @@ button:active {
     min-width:24px;
 }
 
-.link-note {
-    cursor:pointer;
-    position:relative;
-    transition:background-color 0.2s ease;
-}
-
-.link-note:not(.expanded) {
-    max-height:6em;
-    overflow:hidden;
-}
-
-.link-note:not(.expanded).has-more {
-    background:#E3E6E9;
-}
 
 /* ---------- ENCRYPTED NOTE ---------- */
 
@@ -666,7 +679,7 @@ button:active {
     }
     
     .scroll-buttons {
-        right:125px;
+        right:130px;
         bottom:40px;
     }
     
@@ -907,10 +920,6 @@ body[data-theme="warm"] .section-title {
     border-color:#BEB8AF;
 }
 
-body[data-theme="warm"] .link-note:not(.expanded).has-more {
-    background:#E6E3DB;
-}
-
 
 /* =========================
    Markdown — Warm
@@ -1051,7 +1060,15 @@ body[data-theme="warm"] .code-block pre {
 
 
 <footer class="footer">
-    Ligiloji © 2026 Eugene Chernereus  |  v0.3.1
+    Ligiloji © 2026 Eugene Chernereus
+    |
+    v0.3.2
+    |
+    <a
+        href="https://github.com/eugenechernereus/Ligiloji"
+        target="_blank"
+        rel="noopener noreferrer"
+    >GitHub ↗</a>
 </footer>
 
 
@@ -1073,7 +1090,8 @@ const state = {
         selectedId: null,
         form: null,
         passwordTarget:null,
-        sessionPassword: null
+        sessionPassword: null,
+        expandedLinks: new Set()
     }
 };
 
@@ -1653,30 +1671,10 @@ function autoResizeTextarea(textarea){
 
     let height = textarea.scrollHeight;
 
-    if(height > 500)
-        height = 500;
+    if(height > 1500)
+        height = 1500;
 
     textarea.style.height = height + "px";
-}
-
-
-document.addEventListener("focusin", function(e){
-
-    if(e.target.tagName === "TEXTAREA"){
-        autoResizeTextarea(e.target);
-    }
-});
-
-
-function updateNoteIndicators() {
-
-    document.querySelectorAll(".link-note").forEach(note => {
-
-        if(note.scrollHeight - note.clientHeight > 20)
-            note.classList.add("has-more");
-        else
-            note.classList.remove("has-more");
-    });
 }
 
 
@@ -1779,9 +1777,22 @@ function render() {
     renderContents();
     
     requestAnimationFrame(()=>{
+
+        if(state.ui.editId){
+
+            const textarea =
+                document.querySelector(
+                    "textarea.edit-note"
+                );
+
+            if(textarea){
+                autoResizeTextarea(textarea);
+            }
+        }
+
         focusFirstInput();
     });
-    updateNoteIndicators();
+
 }
 
 
@@ -2250,7 +2261,6 @@ function renderLink(item, number) {
                 </button>
             </div>
                         
-
             <input
                 class="edit-title"
                 value="${item.title}"
@@ -2307,15 +2317,17 @@ function renderLink(item, number) {
 
         `;
     }
+
+    const expanded = state.ui.expandedLinks.has(item.id);
     
     const linkText =
         item.url
         ?
         `<a href="${item.url}" target="_blank">
             ${item.title}
-            </a>`
+        </a>`
         :
-        `${item.title}`;
+        `<strong>${item.title}</strong>`;
 
     return `
 
@@ -2324,6 +2336,15 @@ function renderLink(item, number) {
         <div class="link-header">
             
             <div class="link-title">
+
+                <button
+                    type="button"
+                    class="expand-toggle"
+                    data-action="toggle-link"
+                    data-id="${item.id}"
+                    aria-label="${expanded ? "Collapse" : "Expand"}">
+                    ${expanded ? "▼" : "▶"}
+                </button>
                 
                 <span class="number">${number}.</span>
                 
@@ -2363,61 +2384,68 @@ function renderLink(item, number) {
 
         </div>
 
-        <div class="small">
-            
-            ${item.url ? "🌐 " + shortUrl(item.url) + "<br>" : ""}
-            
-            <div class="row">
-                ${item.login ? "🆔 " + item.login + "<br>" : ""}
+        ${
+            expanded
+            ?
+            `
+            <div class="small">
+                
+                ${item.url ? "🌐 " + shortUrl(item.url) + "<br>" : ""}
+                
+                <div class="row">
+                    ${item.login ? "🆔 " + item.login + "<br>" : ""}
+                    
+                    ${
+                        item.login
+                        ?
+                        `
+                        <button
+                            class="copy-btn"
+                            data-action="copy-login"
+                            data-id="${item.id}">
+                            🆔-📋
+                        </button>
+                        `
+                        :
+                        ""
+                    }
+                </div>
+
+                <div class="row">
+                    ${item.password ? "🔑 ***<br>" : ""}
+                    
+                    ${
+                        item.password
+                        ?
+                        `
+                        <button
+                            class="copy-btn"
+                            data-action="copy-password"
+                            data-id="${item.id}">
+                            🔑-📋
+                        </button>
+                        `
+                        :
+                        ""
+                    }
+                </div>
                 
                 ${
-                    item.login
+                    item.note
                     ?
-                    `
-                    <button
-                        class="copy-btn"
-                        data-action="copy-login"
-                        data-id="${item.id}">
-                        🆔-📋
-                    </button>
-                    `
+                    `<div
+                        class="note markdown">
+                        📜 ${renderNote(item.note)}
+                    </div>`
                     :
                     ""
-                    }
-            </div>
+                }
 
-            <div class="row">
-                ${item.password ? "🔑 ***<br>" : ""}
-                
-                ${
-                    item.password
-                    ?
-                    `
-                    <button
-                        class="copy-btn"
-                        data-action="copy-password"
-                        data-id="${item.id}">
-                        🔑-📋
-                    </button>
-                    `
-                    :
-                    ""
-                    }
             </div>
-            
-            ${
-                item.note
-                ?
-                `<div
-                    class="note markdown link-note"
-                    data-id="${item.id}">
-                    📜 ${renderNote(item.note)}
-                </div>`
-                :
-                ""
-            }
-
-        </div>
+            `
+            :
+            ""
+        }
 
     </div>
 
@@ -2548,9 +2576,29 @@ function renderContents(){
 // заголовок категории
 function renderCategoryHeader(category) {
 
+    const links =
+        state.data.links.filter(
+            item => item.categoryId === category.id
+        );
+
+    const allExpanded =
+        links.length > 0 &&
+        links.every(
+            item => state.ui.expandedLinks.has(item.id)
+        );
+
     return `
 
     <h3>
+
+        <button
+            type="button"
+            class="category-toggle"
+            data-action="toggle-category"
+            data-id="${category.id}"
+            aria-label="${allExpanded ? "Collapse all" : "Expand all"}">
+            ${allExpanded ? "▼" : "▶"}
+        </button>
 
         📂 ${category.name}
 
@@ -2579,7 +2627,7 @@ function renderCategoryHeader(category) {
         </button>
 
     </h3>
-
+    
     `;
 }
 
@@ -3313,44 +3361,6 @@ function scrollBottomPage(){
 }
 
 
-let noteMouseDownX = 0;
-let noteMouseDownY = 0;
-
-function handleNoteMouseDown(e) {
-
-    const note = e.target.closest(".link-note");
-
-    if(!note)
-        return;
-
-    noteMouseDownX = e.clientX;
-    noteMouseDownY = e.clientY;
-}
-
-
-function handleNoteClick(e) {
-
-    const note = e.target.closest(".link-note");
-
-    if(!note)
-        return;
-        
-    const dx = Math.abs(e.clientX - noteMouseDownX);
-    const dy = Math.abs(e.clientY - noteMouseDownY);
-
-    // Если мышь двигалась — это выделение текста, а не клик
-    if(dx > 5 || dy > 5)
-        return;
-        
-    const selection = window.getSelection();
-
-    if(selection && selection.toString().length > 0)
-        return;
-
-    note.classList.toggle("expanded");
-}
-
-
 function hideScrollButtons(){
     const buttons =
         document.querySelector(".scroll-buttons");
@@ -3385,9 +3395,6 @@ function handleClick(e) {
         return;
     }
     
-    handleNoteMouseDown(e);
-    handleNoteClick(e);
-
     if(!button)
         return;
         
@@ -3460,6 +3467,46 @@ function handleClick(e) {
     const id = button.dataset.id
         ? Number(button.dataset.id)
         : null;
+    
+    if(action === "toggle-category"){
+
+        const links =
+            state.data.links.filter(
+                item => item.categoryId === id
+            );
+
+        const allExpanded =
+            links.length > 0 &&
+            links.every(
+                item => state.ui.expandedLinks.has(item.id)
+            );
+
+        links.forEach(item => {
+
+            if(allExpanded){
+                state.ui.expandedLinks.delete(item.id);
+            }
+            else{
+                state.ui.expandedLinks.add(item.id);
+            }
+        });
+
+        render();
+        return;
+    }
+    
+    if(action === "toggle-link"){
+
+        if(state.ui.expandedLinks.has(id)){
+            state.ui.expandedLinks.delete(id);
+        }
+        else{
+            state.ui.expandedLinks.add(id);
+        }
+
+        render();
+        return;
+    }
         
     if(action === "copy-login"){
         copyLogin(id, button);
