@@ -62,11 +62,7 @@ When the file is saved, the temporary data is automatically cleared.
 
 When a section or category is deleted, it is removed along with all its contents, and there is no way to restore it.
 
-When a note is deleted within a category, it is moved to the automatically created “Trash” category.
-
-From the trash, the entry is restored to its original category.
-
-To clear the trash, you need to delete it completely.
+After a note is deleted, it is marked with the ♻️ icon. When saved again, such notes will be permanently deleted.
 
 ***
 

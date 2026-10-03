@@ -173,7 +173,7 @@ h1 {
 input,
 textarea,
 select {
-    padding:8px;
+    padding:7px;
     margin:5px;
 
     box-sizing:border-box;
@@ -215,8 +215,13 @@ select {
 .edit-actions {
     display:flex;
     justify-content:flex-end;
+    align-items:center;
     gap:5px;
     padding-right:50px;
+}
+
+.edit-actions button {
+    margin-top:0;
 }
 
 .edit-note,
@@ -228,7 +233,7 @@ select {
 /* ---------- BUTTONS ---------- */
 
 button {
-    padding:8px 15px;
+    padding:7px 15px;
 
     cursor:pointer;
     vertical-align:top;
@@ -238,7 +243,7 @@ button {
     background:#D0D5D9;
 
     border:1px solid #A7AEB4;
-    border-radius:6px;
+    border-radius:3px;
     box-shadow:
         0 1px 2px rgba(35,40,45,.08);
 
@@ -262,6 +267,14 @@ button:active {
     background:#B9C0C6;
     box-shadow:
         inset 0 1px 2px rgba(35,40,45,.12);
+}
+
+.copy-btn {
+    padding:5px 20px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 
@@ -614,13 +627,13 @@ button:active {
 /* ---------- ROW ---------- */
 
 .row {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
 
-    margin-top:4px;
+    margin-top: 4px;
 }
-
 
 .footer {
     flex:0 0 auto;
@@ -1062,7 +1075,7 @@ body[data-theme="warm"] .code-block pre {
 <footer class="footer">
     Ligiloji © 2026 Eugene Chernereus
     |
-    v0.3.2
+    v0.3.3
     |
     <a
         href="https://github.com/eugenechernereus/Ligiloji"
@@ -1899,16 +1912,7 @@ function renderCategory(category, items) {
 
 
 function isTrashLink(item){
-
-    const trash =
-        state.data.categories.find(
-            category => category.system === "trash"
-        );
-
-    return Boolean(
-        trash &&
-        item.categoryId === trash.id
-    );
+    return item.deleted === true;
 }
 
 
@@ -2350,6 +2354,16 @@ function renderLink(item, number) {
                 
                 ${linkText}
                 
+                ${
+                    item.note
+                    ?
+                    `
+                    📜
+                    `
+                    :
+                    ""
+                }
+                
             </div>
 
             <div class="actions">
@@ -2384,6 +2398,40 @@ function renderLink(item, number) {
 
         </div>
 
+        <div class="row">
+            
+            ${
+                item.login
+                ?
+                `
+                <button
+                    class="copy-btn"
+                    data-action="copy-login"
+                    data-id="${item.id}">
+                    🆔→📋
+                </button>
+                `
+                :
+                ""
+            }
+            
+            ${
+                item.password
+                ?
+                `
+                <button
+                    class="copy-btn"
+                    data-action="copy-password"
+                    data-id="${item.id}">
+                    🔑→📋
+                </button>
+                `
+                :
+                ""
+            }
+            
+        </div>
+
         ${
             expanded
             ?
@@ -2395,39 +2443,11 @@ function renderLink(item, number) {
                 <div class="row">
                     ${item.login ? "🆔 " + item.login + "<br>" : ""}
                     
-                    ${
-                        item.login
-                        ?
-                        `
-                        <button
-                            class="copy-btn"
-                            data-action="copy-login"
-                            data-id="${item.id}">
-                            🆔-📋
-                        </button>
-                        `
-                        :
-                        ""
-                    }
                 </div>
 
                 <div class="row">
                     ${item.password ? "🔑 ***<br>" : ""}
                     
-                    ${
-                        item.password
-                        ?
-                        `
-                        <button
-                            class="copy-btn"
-                            data-action="copy-password"
-                            data-id="${item.id}">
-                            🔑-📋
-                        </button>
-                        `
-                        :
-                        ""
-                    }
                 </div>
                 
                 ${
@@ -2727,13 +2747,9 @@ function removeLink(id){
     if(!item)
         return;
 
-    const trashId =
-        getTrashCategory();
-        
-    item.oldCategoryId = item.categoryId;
-    item.categoryId = trashId;
-    
-    markChanged()
+    item.deleted = true;
+
+    markChanged();
 
     render();
 }
@@ -2749,13 +2765,9 @@ function restoreLink(id){
     if(!item)
         return;
 
-    if(item.oldCategoryId){
+    delete item.deleted;
 
-        item.categoryId = item.oldCategoryId;
-        delete item.oldCategoryId;
-    }
-    
-    markChanged()
+    markChanged();
 
     render();
 }
@@ -4210,13 +4222,29 @@ function getSaveDate(){
 }
 
 
+function getDataForSave(){
+
+    return {
+        ...state.data,
+
+        links:
+            state.data.links.filter(
+                item => item.deleted !== true
+            )
+    };
+}
+
+
 function saveJSON(){
     
     const date = getSaveDate();
 
+    const dataToSave =
+        getDataForSave();
+
     const json =
         JSON.stringify(
-            state.data,
+            dataToSave,
             null,
             4
         );
@@ -4282,13 +4310,13 @@ async function saveHTMLWithPassword(button){
 
     if (password) {
         dataToSave = await encryptData(
-            state.data,
+            getDataForSave(),
             password
         );
 
     } else {
 
-        dataToSave = state.data;
+        dataToSave = getDataForSave();
     }
     
     /*

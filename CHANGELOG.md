@@ -5,6 +5,12 @@ All notable changes to Ligiloji are documented in this file.
 The project is currently under active development, so the format
 and release process may evolve over time.
 
+## [v0.3.3] - 2026-10-03
+
+### Added
+
+- Update element deletion logic
+
 ## [v0.3.2] - 2026-09-19
 
 ### Added
@@ -21,8 +27,8 @@ and release process may evolve over time.
 
 ### Added
 
-- Additional separate encryption of notes, independent of the main one.
-- Copy button for Markdown code blocks.
+- Additional separate encryption of notes, independent of the main one
+- Copy button for Markdown code blocks
 ***
 ## [v0.2.2] - 2026-08-31
 
