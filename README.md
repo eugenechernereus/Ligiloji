@@ -22,6 +22,12 @@ The architecture has a nested structure.
 
 Create sections, categories add notes.
 
+### 4. Rename
+
+To rename the new database, use the dialog box inside the application: “SaveHTML with a new name”.
+**Do not rename the file in File Explorer.**
+When saving, a new file is created with the current name + timestamp (UTC)
+
 ## Search
 
 The search works by name, login and notes within the selected category.
@@ -40,9 +46,10 @@ The encryption password must be entered every time you save. You can also change
 
 Data can be exported to JSON and imported back into Ligiloji.
 
-**Be careful, the JSON format is not encrypted and is used to transfer between versions of the program or transform into other data formats.**
+**Be careful, the JSON format is not encrypted and is used to transfer between versions of the app or transform into other data formats.**
 
 To create a new database, it is enough to clear all, add new data and save a new file.
+You can create an unlimited number of different independent databases.
 
 There is no technical limit on the amount of data that can be stored, but very large datasets may affect performance, depending on the device and browser.
 
@@ -64,8 +71,26 @@ When a section or category is deleted, it is removed along with all its contents
 
 After a note is deleted, it is marked with the ♻️ icon. When saved again, such notes will be permanently deleted.
 
-***
+## MarkDown in notes
 
+The following syntax MD is supported:
+
+- headings of three levels (#, ##, ###)
+- bold font (**)
+- italic font (*)
+- crossed‑out text(~~)
+- lists (-, *, 1.)
+- nested lists with 2 spaces
+- horizontal line (---, ***)
+- code block (`, ```)
+- quotes (>)
+
+***
+## For Andriod
+
+For more convenient use of the app on an Android smartphone, install Ligiloji_android.apk.
+
+***
 ## Privacy
 
 Users should nevertheless understand the security properties of their browser and their local files before storing sensitive information.

@@ -623,6 +623,45 @@ button:active {
     border-bottom:1px solid #AEB4BA;
 }
 
+#toc details > summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+#toc details > summary::-webkit-details-marker {
+    display: none;
+}
+
+#toc details > summary::before {
+    content: "▼ ";
+}
+
+#toc details:not([open]) > summary::before {
+    content: "▶ ";
+}
+
+.toc-section-header {
+    display: flex;
+    align-items: center;
+}
+
+.toc-section-header .toc-item {
+    flex: 1;
+    text-align: left;
+}
+
+.toc-toggle {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    padding: 6px 10px;
+    color: inherit;
+}
+
+.toc-categories[hidden] {
+    display: none;
+}
+
 
 /* ---------- ROW ---------- */
 
@@ -1075,7 +1114,7 @@ body[data-theme="warm"] .code-block pre {
 <footer class="footer">
     Ligiloji © 2026 Eugene Chernereus
     |
-    v0.3.3
+    v0.3.4
     |
     <a
         href="https://github.com/eugenechernereus/Ligiloji"
@@ -1928,32 +1967,31 @@ function renderMarkdown(text){
     if(!text)
         return "";
 
-    let lines =
-        String(text)
-            .replace(/\r\n/g, "\n")
-            .split("\n");
+    const lines = String(text)
+        .replace(/\r\n/g, "\n")
+        .split("\n");
 
     let html = "";
-    let inUl = false;
-    let inOl = false;
     let inCodeBlock = false;
     let codeBuffer = [];
     let paragraph = [];
 
+    // Стек открытых списков
+    const listStack = [];
 
     function closeLists(){
 
-        if(inUl){
-            html += "</ul>";
-            inUl = false;
-        }
+        while(listStack.length){
 
-        if(inOl){
-            html += "</ol>";
-            inOl = false;
+            const list = listStack.pop();
+
+            if(list.liOpen){
+                html += "</li>";
+            }
+
+            html += `</${list.type}>`;
         }
     }
-
 
     function flushParagraph(){
 
@@ -1965,7 +2003,6 @@ function renderMarkdown(text){
             paragraph = [];
         }
     }
-
 
     function inlineMarkdown(value){
 
@@ -1999,7 +2036,6 @@ function renderMarkdown(text){
         return value;
     }
 
-
     for(const rawLine of lines){
 
         /* ---------- CODE BLOCK ---------- */
@@ -2032,16 +2068,13 @@ function renderMarkdown(text){
             continue;
         }
 
-
         if(inCodeBlock){
 
             codeBuffer.push(rawLine);
             continue;
         }
 
-
         const line = rawLine.trim();
-
 
         /* ---------- EMPTY LINE ---------- */
 
@@ -2053,6 +2086,107 @@ function renderMarkdown(text){
             continue;
         }
 
+        /* ---------- UNORDERED / ORDERED LIST ---------- */
+
+        const listMatch = rawLine.match(
+            /^( *)([-*]|\d+\.)\s+(.+)$/
+        );
+
+        if(listMatch){
+
+            flushParagraph();
+
+            const indent = Math.floor(
+                listMatch[1].length / 2
+            );
+
+            const marker = listMatch[2];
+            const content = listMatch[3];
+
+            const type = /^\d+\.$/.test(marker)
+                ? "ol"
+                : "ul";
+
+            // Новый список верхнего уровня
+            if(!listStack.length){
+
+                html += `<${type}>`;
+
+                listStack.push({
+                    type,
+                    indent,
+                    liOpen: false
+                });
+
+            }else{
+
+                let current =
+                    listStack[listStack.length - 1];
+
+                // Переход к более глубокому уровню
+                if(indent > current.indent){
+
+                    // Вложенный список помещается
+                    // внутрь предыдущего элемента
+                    html += `<${type}>`;
+
+                    listStack.push({
+                        type,
+                        indent,
+                        liOpen: false
+                    });
+
+                }else{
+
+                    // Закрываем уровни, из которых вышли
+                    while(
+                        listStack.length &&
+                        listStack[listStack.length - 1].indent > indent
+                    ){
+
+                        const previous = listStack.pop();
+
+                        if(previous.liOpen)
+                            html += "</li>";
+
+                        html += `</${previous.type}>`;
+                    }
+
+                    current =
+                        listStack[listStack.length - 1];
+
+                    // Тип списка изменился на том же уровне
+                    if(!current || current.type !== type){
+
+                        closeLists();
+
+                        html += `<${type}>`;
+
+                        listStack.push({
+                            type,
+                            indent,
+                            liOpen: false
+                        });
+
+                    }else if(current.liOpen){
+
+                        // Закрываем предыдущий элемент
+                        html += "</li>";
+                        current.liOpen = false;
+                    }
+                }
+            }
+
+            const current =
+                listStack[listStack.length - 1];
+
+            html +=
+                `<li>${inlineMarkdown(content)}`;
+
+            current.liOpen = true;
+
+            continue;
+        }
 
         /* ---------- HORIZONTAL LINE ---------- */
 
@@ -2066,19 +2200,16 @@ function renderMarkdown(text){
             continue;
         }
 
-
         /* ---------- HEADINGS ---------- */
 
-        let match =
-            line.match(/^(#{1,3})\s+(.+)$/);
+        let match = line.match(/^(#{1,3})\s+(.+)$/);
 
         if(match){
 
             flushParagraph();
             closeLists();
 
-            const level =
-                match[1].length;
+            const level = match[1].length;
 
             html +=
                 `<h${level}>${inlineMarkdown(match[2])}</h${level}>`;
@@ -2086,72 +2217,9 @@ function renderMarkdown(text){
             continue;
         }
 
-
-        /* ---------- UNORDERED LIST ---------- */
-
-        match =
-            line.match(/^[-*]\s+(.+)$/);
-
-        if(match){
-
-            flushParagraph();
-
-            if(inOl){
-
-                html += "</ol>";
-                inOl = false;
-            }
-
-            if(!inUl){
-
-                html += "<ul>";
-                inUl = true;
-            }
-
-            html +=
-                `<li>${inlineMarkdown(match[1])}</li>`;
-
-            continue;
-        }
-
-
-        /* ---------- ORDERED LIST ---------- */
-
-        match =
-            line.match(/^(\d+)\.\s+(.+)$/);
-
-        if(match){
-
-            flushParagraph();
-
-            if(inUl){
-
-                html += "</ul>";
-                inUl = false;
-            }
-
-            if(!inOl){
-
-                html += "<ol>";
-                inOl = true;
-            }
-
-            const number = parseInt(match[1], 10);
-            const content = match[2];
-
-            html +=
-                `<li value="${number}">
-                    ${inlineMarkdown(content)}
-                </li>`;
-
-            continue;
-        }
-
-
         /* ---------- BLOCKQUOTE ---------- */
 
-        match =
-            line.match(/^>\s?(.*)$/);
+        match = line.match(/^>\s?(.*)$/);
 
         if(match){
 
@@ -2164,14 +2232,12 @@ function renderMarkdown(text){
             continue;
         }
 
-
         /* ---------- NORMAL TEXT ---------- */
 
         closeLists();
 
         paragraph.push(line);
     }
-
 
     /* ---------- FINISH ---------- */
 
@@ -2513,82 +2579,139 @@ function copyPassword(id, button){
 }
 
 
-function renderContents(){
-
-    const toc =
-        document.getElementById("toc");
-
-    toc.innerHTML = "";
+function renderContents() {
     
-    const contentsButton =
-        document.createElement("button");
+    state.ui.tocSectionState ??= {};
+    const tocSectionState = state.ui.tocSectionState;
 
+    const toc = document.getElementById("toc");
+    toc.innerHTML = "";
+
+    // Catalog header
+    const contentsButton = document.createElement("button");
     contentsButton.className = "toc-item";
-
     contentsButton.dataset.contents = "true";
-
     contentsButton.textContent = "📖 Catalog";
 
-    if(state.ui.selectedType === "contents"){
+    if (state.ui.selectedType === "contents") {
         contentsButton.classList.add("active");
     }
 
-    toc.appendChild(contentsButton);
+    const catalogHeader = document.createElement("div");
+    catalogHeader.className = "toc-section-header";
 
-    state.data.sections
+    const allToggle = document.createElement("button");
+    allToggle.type = "button";
+    allToggle.className = "toc-toggle";
+
+    const updateAllToggle = () => {
+        const allOpen = state.data.sections.every(
+            section => tocSectionState[String(section.id)] !== false
+        );
+
+        allToggle.textContent = allOpen ? "▼" : "▶";
+        allToggle.setAttribute(
+            "aria-label",
+            allOpen ? "Collapse all sections" : "Expand all sections"
+        );
+        allToggle.setAttribute("aria-expanded", String(allOpen));
+    };
+
+    allToggle.onclick = event => {
+        event.stopPropagation();
+
+        const allOpen = state.data.sections.every(
+            section => tocSectionState[String(section.id)] !== false
+        );
+
+        state.data.sections.forEach(section => {
+            tocSectionState[String(section.id)] = !allOpen;
+        });
+
+        renderContents();
+    };
+
+    catalogHeader.append(contentsButton, allToggle);
+    toc.appendChild(catalogHeader);
+
+    // Sections
+    [...state.data.sections]
         .sort(sortByName)
-        
-        .forEach(section=>{
+        .forEach(section => {
+            const details = document.createElement("div");
+            details.className = "toc-section";
 
-            const sectionTitle =
-                document.createElement("button");
+            const header = document.createElement("div");
+            header.className = "toc-section-header";
 
-            sectionTitle.className =
-                "toc-item";
+            const title = document.createElement("button");
+            title.className = "toc-item";
+            title.dataset.section = section.id;
+            title.textContent = "💼 " + section.name;
 
-            sectionTitle.dataset.section =
-                section.id;
+            const arrow = document.createElement("button");
+            arrow.type = "button";
+            arrow.className = "toc-toggle";
 
-            sectionTitle.textContent =
-                "💼 " + section.name;
-                
-            if(
-                state.ui.selectedType === "section" &&
-                state.ui.selectedId === section.id
-            ){
-                sectionTitle.classList.add("active");
+            const categories = document.createElement("div");
+            categories.className = "toc-categories";
+
+            const sectionKey = String(section.id);
+
+            if (tocSectionState[sectionKey] === undefined) {
+                tocSectionState[sectionKey] = false;
             }
 
-            toc.appendChild(sectionTitle);
+            const updateToggle = () => {
+                const isOpen = tocSectionState[sectionKey];
+                categories.hidden = !isOpen;
+                arrow.textContent = isOpen ? "▼" : "▶";
+                arrow.setAttribute("aria-expanded", String(isOpen));
+            };
 
+            updateToggle();
+
+            arrow.setAttribute(
+                "aria-label",
+                "Toggle " + section.name
+            );
+
+            arrow.onclick = event => {
+                event.stopPropagation();
+
+                tocSectionState[sectionKey] =
+                    !tocSectionState[sectionKey];
+
+                updateToggle();
+                updateAllToggle();
+            };
+
+            header.append(title, arrow);
+            details.append(header, categories);
+
+            // Categories
             state.data.categories
                 .filter(category =>
                     category.sectionId === section.id
                 )
                 .sort(sortByName)
-                
-                .forEach(category=>{
+                .forEach(category => {
+                    const button = document.createElement("button");
+                    button.className = "toc-item";
+                    button.dataset.category = category.id;
+                    button.textContent = " ‣ 📂 " + category.name;
 
-                    const button =
-                        document.createElement("button");
-
-                    button.className =
-                        "toc-item";
-
-                    button.dataset.category =
-                        category.id;
-
-                    button.textContent =
-                        " ‣ 📂 " + category.name;
-
-                    if(
+                    if (
                         state.ui.selectedCategoryId === category.id
-                    ){
+                    ) {
                         button.classList.add("active");
                     }
 
-                    toc.appendChild(button);
+                    categories.appendChild(button);
                 });
+
+            toc.appendChild(details);
+            updateAllToggle();
         });
 }
 

@@ -5,6 +5,13 @@ All notable changes to Ligiloji are documented in this file.
 The project is currently under active development, so the format
 and release process may evolve over time.
 
+## [v0.3.4] - 2026-10-09
+
+### Added
+
+- Nested markdown lists
+- Drop‑down list of categories
+
 ## [v0.3.3] - 2026-10-03
 
 ### Added
@@ -29,6 +36,7 @@ and release process may evolve over time.
 
 - Additional separate encryption of notes, independent of the main one
 - Copy button for Markdown code blocks
+
 ***
 ## [v0.2.2] - 2026-08-31
 
@@ -50,6 +58,7 @@ and release process may evolve over time.
 ### Added
 
 - MarkDown-editor in notes
+
 ***
 ## [v0.1.3] - 2026-08-26
 
