@@ -109,6 +109,27 @@ body.content-expanded #content {
     line-height:1;
 }
 
+/* Нижняя кнопка сворачивания content */
+#collapse-content-bottom {
+    display: none;
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 2000;
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 18px;
+}
+
+body.content-expanded #collapse-content-bottom {
+    display: block;
+}
+
+.collapse-bottom {
+    display: block;
+    margin: 12px auto 0;
+}
 
 /* ---------- CATALOG ---------- */
 
@@ -1099,9 +1120,21 @@ body[data-theme="warm"] .code-block pre {
         title="Go to bottom">
         ▼
     </button>
+    
+    <button
+        id="collapse-content-bottom"
+        data-action="toggle-content"
+        title="Свернуть"
+    >⤢
+    </button>
 
 </div>
 
+<button
+    id="collapse-content-bottom"
+    data-action="toggle-content"
+    title="Свернуть список"
+>⤢</button>
 
 <script id="database" type="application/json">{
     "sections": [],
@@ -1114,7 +1147,7 @@ body[data-theme="warm"] .code-block pre {
 <footer class="footer">
     Ligiloji © 2026 Eugene Chernereus
     |
-    v0.3.4
+    v0.3.5
     |
     <a
         href="https://github.com/eugenechernereus/Ligiloji"
@@ -1962,13 +1995,11 @@ function escapeHtml(text){
 }
 
 
-function renderMarkdown(text){
-
-    if(!text)
-        return "";
+function renderMarkdown(text) {
+    if (!text) return "";
 
     const lines = String(text)
-        .replace(/\r\n/g, "\n")
+        .replace(/\r\n?/g, "\n")
         .split("\n");
 
     let html = "";
@@ -1976,36 +2007,45 @@ function renderMarkdown(text){
     let codeBuffer = [];
     let paragraph = [];
 
-    // Стек открытых списков
+    // Стек списков: каждый уровень содержит тип,
+    // отступ, состояние элемента и начальный номер.
     const listStack = [];
 
-    function closeLists(){
+    function closeTopList() {
+        if (!listStack.length) return;
 
-        while(listStack.length){
+        const list = listStack.pop();
 
-            const list = listStack.pop();
+        if (list.liOpen) {
+            html += "</li>";
+        }
 
-            if(list.liOpen){
-                html += "</li>";
+        html += `</${list.type}>`;
+    }
+
+    function closeListsToLevel(indent = -1) {
+        while (
+            listStack.length &&
+            listStack[listStack.length - 1].indent > indent
+        ) {
+            closeTopList();
+        }
+
+        if (indent === -1) {
+            while (listStack.length) {
+                closeTopList();
             }
-
-            html += `</${list.type}>`;
         }
     }
 
-    function flushParagraph(){
+    function flushParagraph() {
+        if (!paragraph.length) return;
 
-        if(paragraph.length){
-
-            html +=
-                `<p>${paragraph.map(inlineMarkdown).join("<br>")}</p>`;
-
-            paragraph = [];
-        }
+        html += `<p>${paragraph.map(inlineMarkdown).join("<br>")}</p>`;
+        paragraph = [];
     }
 
-    function inlineMarkdown(value){
-
+    function inlineMarkdown(value) {
         value = escapeHtml(value);
 
         value = value.replace(
@@ -2036,29 +2076,49 @@ function renderMarkdown(text){
         return value;
     }
 
-    for(const rawLine of lines){
+    function openList(type, indent, start = 1) {
+        if (type === "ol") {
+            html += start === 1
+                ? "<ol>"
+                : `<ol start="${start}">`;
+        } else {
+            html += "<ul>";
+        }
 
-        /* ---------- CODE BLOCK ---------- */
+        listStack.push({
+            type,
+            indent,
+            liOpen: false
+        });
+    }
 
-        if(rawLine.trim() === "```"){
+    function closeCurrentItem(list) {
+        if (list && list.liOpen) {
+            html += "</li>";
+            list.liOpen = false;
+        }
+    }
 
-            if(!inCodeBlock){
+    for (const rawLine of lines) {
+        
+        // ---------- CODE BLOCK ----------
 
+        if (rawLine.trim() === "```") {
+            if (!inCodeBlock) {
                 flushParagraph();
-                closeLists();
+                closeListsToLevel();
 
                 inCodeBlock = true;
                 codeBuffer = [];
-
-            }else{
-
+            } else {
                 html +=
                     `<div class="code-block">
                         <button
                             class="copy-code-btn"
-                            data-action="copy-code">⧉
-                        </button>
-                        <pre><code>${escapeHtml(codeBuffer.join("\n"))}</code></pre>
+                            data-action="copy-code">⧉</button>
+                        <pre><code>${escapeHtml(
+                            codeBuffer.join("\n")
+                        )}</code></pre>
                     </div>`;
 
                 inCodeBlock = false;
@@ -2068,193 +2128,139 @@ function renderMarkdown(text){
             continue;
         }
 
-        if(inCodeBlock){
-
+        if (inCodeBlock) {
             codeBuffer.push(rawLine);
             continue;
         }
 
         const line = rawLine.trim();
 
-        /* ---------- EMPTY LINE ---------- */
+        // ---------- EMPTY LINE ----------
 
-        if(!line){
-
+        if (!line) {
             flushParagraph();
-            closeLists();
-
+            closeListsToLevel();
             continue;
         }
 
-        /* ---------- UNORDERED / ORDERED LIST ---------- */
+        // ---------- LISTS ----------
 
         const listMatch = rawLine.match(
             /^( *)([-*]|\d+\.)\s+(.+)$/
         );
 
-        if(listMatch){
-
+        if (listMatch) {
             flushParagraph();
 
-            const indent = Math.floor(
-                listMatch[1].length / 2
-            );
-
+            const indent = Math.floor(listMatch[1].length / 2);
             const marker = listMatch[2];
             const content = listMatch[3];
 
-            const type = /^\d+\.$/.test(marker)
-                ? "ol"
-                : "ul";
+            const type = /^\d+\.$/.test(marker) ? "ol" : "ul";
+            const start = type === "ol" ? parseInt(marker, 10) : 1;
 
-            // Новый список верхнего уровня
-            if(!listStack.length){
-
-                html += `<${type}>`;
-
-                listStack.push({
-                    type,
-                    indent,
-                    liOpen: false
-                });
-
-            }else{
-
-                let current =
-                    listStack[listStack.length - 1];
-
-                // Переход к более глубокому уровню
-                if(indent > current.indent){
-
-                    // Вложенный список помещается
-                    // внутрь предыдущего элемента
-                    html += `<${type}>`;
-
-                    listStack.push({
-                        type,
-                        indent,
-                        liOpen: false
-                    });
-
-                }else{
-
-                    // Закрываем уровни, из которых вышли
-                    while(
-                        listStack.length &&
-                        listStack[listStack.length - 1].indent > indent
-                    ){
-
-                        const previous = listStack.pop();
-
-                        if(previous.liOpen)
-                            html += "</li>";
-
-                        html += `</${previous.type}>`;
-                    }
-
-                    current =
-                        listStack[listStack.length - 1];
-
-                    // Тип списка изменился на том же уровне
-                    if(!current || current.type !== type){
-
-                        closeLists();
-
-                        html += `<${type}>`;
-
-                        listStack.push({
-                            type,
-                            indent,
-                            liOpen: false
-                        });
-
-                    }else if(current.liOpen){
-
-                        // Закрываем предыдущий элемент
-                        html += "</li>";
-                        current.liOpen = false;
-                    }
-                }
+            // Закрываем списки, из которых вышли.
+            while (
+                listStack.length &&
+                listStack[listStack.length - 1].indent > indent
+            ) {
+                closeTopList();
             }
 
-            const current =
-                listStack[listStack.length - 1];
+            let current = listStack.length
+                ? listStack[listStack.length - 1]
+                : null;
 
-            html +=
-                `<li>${inlineMarkdown(content)}`;
+            // Если отступ увеличился — создаём вложенный список.
+            if (current && indent > current.indent) {
+                // Вложенный список должен находиться внутри
+                // последнего элемента родительского списка.
+                if (!current.liOpen) {
+                    html += "<li>";
+                    current.liOpen = true;
+                }
 
+                openList(type, indent, start);
+                current = listStack[listStack.length - 1];
+            } else if (!current) {
+                // Новый список верхнего уровня.
+                openList(type, indent, start);
+                current = listStack[listStack.length - 1];
+            } else if (
+                current.indent === indent &&
+                current.type !== type
+            ) {
+                // Тип списка изменился на том же уровне.
+                closeTopList();
+                openList(type, indent, start);
+                current = listStack[listStack.length - 1];
+            } else {
+                // Продолжаем список того же уровня.
+                closeCurrentItem(current);
+            }
+
+            html += `<li>${inlineMarkdown(content)}`;
             current.liOpen = true;
 
             continue;
         }
 
-        /* ---------- HORIZONTAL LINE ---------- */
+        // ---------- HORIZONTAL LINE ----------
 
-        if(/^(-{3,}|\*{3,})$/.test(line)){
-
+        if (/^(-{3,}|\*{3,})$/.test(line)) {
             flushParagraph();
-            closeLists();
-
+            closeListsToLevel();
             html += "<hr>";
-
             continue;
         }
 
-        /* ---------- HEADINGS ---------- */
+        // ---------- HEADINGS ----------
 
         let match = line.match(/^(#{1,3})\s+(.+)$/);
 
-        if(match){
-
+        if (match) {
             flushParagraph();
-            closeLists();
+            closeListsToLevel();
 
             const level = match[1].length;
-
-            html +=
-                `<h${level}>${inlineMarkdown(match[2])}</h${level}>`;
-
+            html += `<h${level}>${inlineMarkdown(match[2])}</h${level}>`;
             continue;
         }
 
-        /* ---------- BLOCKQUOTE ---------- */
+        // ---------- BLOCKQUOTE ----------
 
         match = line.match(/^>\s?(.*)$/);
 
-        if(match){
-
+        if (match) {
             flushParagraph();
-            closeLists();
+            closeListsToLevel();
 
-            html +=
-                `<blockquote>${inlineMarkdown(match[1])}</blockquote>`;
-
+            html += `<blockquote>${inlineMarkdown(match[1])}</blockquote>`;
             continue;
         }
 
-        /* ---------- NORMAL TEXT ---------- */
+        // ---------- NORMAL TEXT ----------
 
-        closeLists();
-
+        closeListsToLevel();
         paragraph.push(line);
     }
 
-    /* ---------- FINISH ---------- */
+    // ---------- FINISH ----------
 
-    if(inCodeBlock){
-
+    if (inCodeBlock) {
         html +=
             `<div class="code-block">
                 <button
                     class="copy-code-btn"
-                    data-action="copy-code">⧉
-                </button>
-                <pre><code>${escapeHtml(codeBuffer.join("\n"))}</code></pre>
+                    data-action="copy-code">⧉</button>
+                <pre><code>${escapeHtml(
+                    codeBuffer.join("\n")
+                )}</code></pre>
             </div>`;
     }
 
     flushParagraph();
-    closeLists();
+    closeListsToLevel();
 
     return html;
 }
@@ -2299,7 +2305,7 @@ function renderLink(item, number) {
 
         return `
 
-        <div class="link edit-form">
+        <div class="link edit-form" data-id="${item.id}">
             
             <div class="edit-actions">
                 <select class="edit-category">
@@ -2401,7 +2407,7 @@ function renderLink(item, number) {
 
     return `
 
-    <div class="link">
+    <div class="link" data-id="${item.id}">
         
         <div class="link-header">
             
@@ -2526,6 +2532,15 @@ function renderLink(item, number) {
                     :
                     ""
                 }
+                
+                <button
+                    type="button"
+                    class="expand-toggle collapse-bottom"
+                    data-action="toggle-link"
+                    data-id="${item.id}"
+                    aria-label="Collapse">
+                    ▲
+                </button>
 
             </div>
             `
@@ -3585,17 +3600,19 @@ function handleClick(e) {
         toggleTheme();
         return;
     }
-    
+
     if(action === "toggle-content"){
         const expanded =
-            document.body.classList.toggle(
-                "content-expanded"
-            );
+            document.body.classList.toggle("content-expanded");
 
-        button.title =
-            expanded
-                ? "Collapse content"
-                : "Expand content";
+        document.querySelectorAll(
+            '[data-action="toggle-content"]'
+        ).forEach(btn => {
+            btn.title = expanded
+                ? "Свернуть список"
+                : "Развернуть список";
+        });
+
         return;
     }
 
@@ -3629,20 +3646,58 @@ function handleClick(e) {
         render();
         return;
     }
-    
-    if(action === "toggle-link"){
 
-        if(state.ui.expandedLinks.has(id)){
+    if (action === "toggle-link") {
+        const content = document.getElementById("content");
+        const isMobile = window.matchMedia("(max-width:700px)").matches;
+
+        const card = button.closest(".link");
+        const isExpanded = state.ui.expandedLinks.has(id);
+
+        // Определяем, нажата ли нижняя кнопка
+        const isBottomButton = button.classList.contains("collapse-bottom");
+
+        const nextCard = card.nextElementSibling;
+
+        // При сворачивании нижней кнопкой фиксируем следующую карточку.
+        // Во всех остальных случаях фиксируем текущую.
+        const anchor = isExpanded &&
+                       isBottomButton &&
+                       nextCard?.classList.contains("link")
+            ? nextCard
+            : card;
+
+        const anchorId = anchor.dataset.id;
+        const oldTop = anchor.getBoundingClientRect().top;
+
+        if (isExpanded) {
             state.ui.expandedLinks.delete(id);
-        }
-        else{
+        } else {
             state.ui.expandedLinks.add(id);
         }
 
         render();
+
+        requestAnimationFrame(() => {
+            const newAnchor = document.querySelector(
+                `#content .link[data-id="${anchorId}"]`
+            );
+
+            if (!newAnchor) return;
+
+            const newTop = newAnchor.getBoundingClientRect().top;
+            const delta = newTop - oldTop;
+
+            if (isMobile) {
+                window.scrollBy(0, delta);
+            } else {
+                content.scrollTop += delta;
+            }
+        });
+
         return;
     }
-        
+    
     if(action === "copy-login"){
         copyLogin(id, button);
         return;

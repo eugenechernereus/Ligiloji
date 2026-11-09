@@ -2,8 +2,11 @@
 
 All notable changes to Ligiloji are documented in this file.
 
-The project is currently under active development, so the format
-and release process may evolve over time.
+## [v0.3.5] - 2026-10-23
+
+### Added
+
+- Minor corrections
 
 ## [v0.3.4] - 2026-10-09
 
